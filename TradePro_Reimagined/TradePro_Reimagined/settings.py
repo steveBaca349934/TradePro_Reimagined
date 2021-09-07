@@ -53,7 +53,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'TradePro_Reimagined.urls'
+ROOT_URLCONF = 'TradePro_Reimagined.TradePro_Reimagined.urls'
 
 TEMPLATES = [
     {
@@ -71,7 +71,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'TradePro_Reimagined.wsgi.application'
+WSGI_APPLICATION = 'TradePro_Reimagined.TradePro_Reimagined.wsgi.application'
 
 
 # Database
