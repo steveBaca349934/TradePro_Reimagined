@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from .models import Room
 
+#A serializer transforms a Room into a JSON response
+#That the front end can utilize
 class RoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
