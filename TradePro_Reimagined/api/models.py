@@ -5,9 +5,9 @@ import random
 
 
 def generate_unique_code():
-    '''
+    """
     Generate random 6 length code
-    '''
+    """
 
     length = 6
 
@@ -21,7 +21,12 @@ def generate_unique_code():
         
 
 
+
 class Room(models.Model):
+    """
+    This is basically the equivalent of a table in a database
+
+    """
     code = models.CharField(max_length=8, default="", unique=True)
     host = models.CharField(max_length=50, unique=True)
     guest_can_pause = models.BooleanField(null=False, default=False)

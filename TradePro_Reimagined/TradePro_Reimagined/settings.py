@@ -16,7 +16,9 @@ import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-sys.path.append('/home/src/TradePro_Reimagined/TradePro_Reimagined/')
+sys.path.append(Path(__file__).resolve().parent)
+sys.path.append(Path(__file__).resolve().parent / 'TradePro_Reimagined/api/')
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
