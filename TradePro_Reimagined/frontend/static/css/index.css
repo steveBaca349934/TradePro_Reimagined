@@ -4,8 +4,6 @@ html, body {
     padding: 0;
 }
 
-
-
 #main{
 
     position: fixed;
@@ -21,4 +19,26 @@ html, body {
     height: 100%;
     display: flex;
     
+}
+
+/* Splash Intro */
+
+.intro{
+    position: fixed;
+    z-index: 2;
+    left: 0;
+    top:0;
+    width: 100%;
+    height: 100vh;
+    background-color: #161616;
+    transition: 1s;
+}
+
+.logo-header{
+position: absolute;
+top: 40%;
+left: 50%;
+transform: translate(-50%, -50%);
+color: #ffffff;
+
 }
