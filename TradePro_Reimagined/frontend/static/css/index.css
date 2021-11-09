@@ -36,17 +36,17 @@ html, body {
 
 .logo-header{
 position: absolute;
-top: 40%;
+top: 5%;
 left: 50%;
 transform: translate(-50%, -50%);
 color: #ffffff;
 
 }
 
- .logo{
+.logo{
     position: relative;
     display: inline-block;
-    bottom: -20px;
+    bottom: -10px;
     opacity: 1;
 }
 
@@ -61,3 +61,12 @@ color: #ffffff;
     opacity: 0;
     transition: ease-in-out 0.5s;
 } 
+
+#intro-page-button{
+
+    background-color: #8d8d8d;
+    
+    
+
+
+}
