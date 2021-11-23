@@ -30,7 +30,7 @@ html, body {
     height: 100vh;
     background-color: #161616;
     transition: 1s;
-    background-image: url('../images/moretest.jpeg');
+    background-image: url('../images/intro.jpeg');
     background-attachment: fixed;
     background-size: cover;
 }
@@ -151,11 +151,34 @@ color: #ffffff;
     left: 42%; */
 
     top: 57%;
-    left: 59%;
+    left: 61%;
 
 }
 
 #intro-page-button-meettheteam:hover{
     transform: translateY(-5px);
     box-shadow: 0 2px 2px #ffffff;
+}
+
+#djia{
+    position:absolute;
+    color: white;
+    top: 0%;
+    left: 0%;
+    font-size: .85em;
+
+}
+#sandp{
+    position:absolute;
+    color:white;
+    top: 30%;
+    left: 0%;
+    font-size: .85em;
+}
+#nasdaq{
+    position:absolute;
+    color: white;
+    top: 60%;
+    left: 0%;
+    font-size: .85em;
 }

@@ -23,6 +23,8 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { Container } from "@material-ui/core";
 
 
+
+
 class ImplementHomePage extends Component {
   constructor(props) {
     super(props);
@@ -46,9 +48,24 @@ class ImplementHomePage extends Component {
       <div class="intro">
 
         <div id="header">
+
+
+
           <h1 class="logo-header">
             <span class="logo">TradePro Reimagined</span>
           </h1>
+
+          <h2>
+            <p id ="djia">DJIA</p>
+          </h2>
+
+          <h2>
+            <p id ="sandp">S&P500</p>
+          </h2>
+
+          <h2>
+            <p id ="nasdaq">Nasdaq</p>
+          </h2>
 
           <h2>
             <form action="http://127.0.0.1:8000/RAT">
@@ -73,6 +90,7 @@ class ImplementHomePage extends Component {
               <button id="intro-page-button-meettheteam">Meet The Team</button>
             </form>
           </h2>
+
         </div>
 
 
