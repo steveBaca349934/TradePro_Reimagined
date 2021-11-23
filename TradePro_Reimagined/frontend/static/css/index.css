@@ -30,8 +30,9 @@ html, body {
     height: 100vh;
     background-color: #161616;
     transition: 1s;
-    background-image: url('test.jpg');
+    background-image: url('../images/moretest.jpeg');
     background-attachment: fixed;
+    background-size: cover;
 }
 
 #header{
