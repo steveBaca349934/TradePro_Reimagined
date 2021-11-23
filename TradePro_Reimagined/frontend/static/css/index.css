@@ -21,8 +21,6 @@ html, body {
     
 }
 
-/* Splash Intro */
-
 .intro{
     position: fixed;
     z-index: 2;
@@ -32,6 +30,20 @@ html, body {
     height: 100vh;
     background-color: #161616;
     transition: 1s;
+    background-image: url('test.jpg');
+    background-attachment: fixed;
+}
+
+#header{
+    position: fixed;
+    z-index: 2;
+    left: 0;
+    top:0;
+    width: 100%;
+    height: 15vh;
+    background-color: #161616;
+    transition: 1s;
+    
 }
 
 .logo-header{
@@ -65,7 +77,7 @@ color: #ffffff;
     /* top: 50%;
     left: 42%; */
 
-    top: 15%;
+    top: 57%;
     left: 23%;
 
 }
@@ -89,7 +101,7 @@ color: #ffffff;
     /* top: 50%;
     left: 42%; */
 
-    top: 15%;
+    top: 57%;
     left: 43%;
 
 }
@@ -113,7 +125,7 @@ color: #ffffff;
     /* top: 50%;
     left: 42%; */
 
-    top: 15%;
+    top: 57%;
     left: 51%;
 
 }
@@ -137,7 +149,7 @@ color: #ffffff;
     /* top: 50%;
     left: 42%; */
 
-    top: 15%;
+    top: 57%;
     left: 59%;
 
 }

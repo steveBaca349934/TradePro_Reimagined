@@ -20,6 +20,7 @@ import FormControl from "@material-ui/core/FormControl";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import { Container } from "@material-ui/core";
 
 
 class ImplementHomePage extends Component {
@@ -44,34 +45,35 @@ class ImplementHomePage extends Component {
 
       <div class="intro">
 
+        <div id="header">
+          <h1 class="logo-header">
+            <span class="logo">TradePro Reimagined</span>
+          </h1>
 
-        <h1 class="logo-header">
-          <span class="logo">TradePro Reimagined</span>
-        </h1>
+          <h2>
+            <form action="http://127.0.0.1:8000/RAT">
+              <button id="intro-page-button">Take The Risk Assessment Test</button>
+            </form>
+          </h2>
 
-        <h2>
-          <form action="http://127.0.0.1:8000/RAT">
-            <button id="intro-page-button">Take The Risk Assessment Test</button>
-          </form>
-        </h2>
+          <h2>
+            <form action="http://127.0.0.1:8000/About">
+              <button id="intro-page-button-about">About</button>
+            </form>
+          </h2>
 
-        <h2>
-          <form action="http://127.0.0.1:8000/About">
-            <button id="intro-page-button-about">About</button>
-          </form>
-        </h2>
+          <h2>
+            <form action="http://127.0.0.1:8000/News">
+              <button id="intro-page-button-news">News</button>
+            </form>
+          </h2>
 
-        <h2>
-          <form action="http://127.0.0.1:8000/News">
-            <button id="intro-page-button-news">News</button>
-          </form>
-        </h2>
-
-        <h2>
-          <form action="http://127.0.0.1:8000/MeetTheTeam">
-            <button id="intro-page-button-meettheteam">Meet The Team</button>
-          </form>
-        </h2>
+          <h2>
+            <form action="http://127.0.0.1:8000/MeetTheTeam">
+              <button id="intro-page-button-meettheteam">Meet The Team</button>
+            </form>
+          </h2>
+        </div>
 
 
 
