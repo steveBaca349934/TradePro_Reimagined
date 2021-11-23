@@ -62,12 +62,87 @@ color: #ffffff;
     border-radius: 1.8em 1.5em 1.5em 0;
     transition: transform .2s ease;
     cursor: pointer;
-    top: 50%;
-    left: 42%;
+    /* top: 50%;
+    left: 42%; */
+
+    top: 15%;
+    left: 23%;
 
 }
 
 #intro-page-button:hover{
+    transform: translateY(-5px);
+    box-shadow: 0 2px 2px #ffffff;
+}
+
+#intro-page-button-about{
+    position:absolute;
+    background-color: #ffffff;
+    color: black;
+    padding: 0.25em 1.25em;
+    font-size: .6em;
+    outline: none;
+    border: none;
+    border-radius: 1.8em 1.5em 1.5em 0;
+    transition: transform .2s ease;
+    cursor: pointer;
+    /* top: 50%;
+    left: 42%; */
+
+    top: 15%;
+    left: 43%;
+
+}
+
+#intro-page-button-about:hover{
+    transform: translateY(-5px);
+    box-shadow: 0 2px 2px #ffffff;
+}
+
+#intro-page-button-news{
+    position:absolute;
+    background-color: #ffffff;
+    color: black;
+    padding: 0.25em 1.25em;
+    font-size: .6em;
+    outline: none;
+    border: none;
+    border-radius: 1.8em 1.5em 1.5em 0;
+    transition: transform .2s ease;
+    cursor: pointer;
+    /* top: 50%;
+    left: 42%; */
+
+    top: 15%;
+    left: 51%;
+
+}
+
+#intro-page-button-news:hover{
+    transform: translateY(-5px);
+    box-shadow: 0 2px 2px #ffffff;
+}
+
+#intro-page-button-meettheteam{
+    position:absolute;
+    background-color: #ffffff;
+    color: black;
+    padding: 0.25em 1.25em;
+    font-size: .6em;
+    outline: none;
+    border: none;
+    border-radius: 1.8em 1.5em 1.5em 0;
+    transition: transform .2s ease;
+    cursor: pointer;
+    /* top: 50%;
+    left: 42%; */
+
+    top: 15%;
+    left: 59%;
+
+}
+
+#intro-page-button-meettheteam:hover{
     transform: translateY(-5px);
     box-shadow: 0 2px 2px #ffffff;
 }

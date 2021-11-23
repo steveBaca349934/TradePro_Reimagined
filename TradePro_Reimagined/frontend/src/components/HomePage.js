@@ -1,5 +1,9 @@
 import React, { Component } from "react";
 import CreateRAT from "./CreateRAT";
+import About from "./About";
+import News from "./News";
+import MeetTheTeam from "./MeetTheTeam"
+
 import {
   BrowserRouter as Router,
   Switch,
@@ -46,8 +50,26 @@ class ImplementHomePage extends Component {
         </h1>
 
         <h2>
-          <form action="https://google.com">
+          <form action="http://127.0.0.1:8000/RAT">
             <button id="intro-page-button">Take The Risk Assessment Test</button>
+          </form>
+        </h2>
+
+        <h2>
+          <form action="http://127.0.0.1:8000/About">
+            <button id="intro-page-button-about">About</button>
+          </form>
+        </h2>
+
+        <h2>
+          <form action="http://127.0.0.1:8000/News">
+            <button id="intro-page-button-news">News</button>
+          </form>
+        </h2>
+
+        <h2>
+          <form action="http://127.0.0.1:8000/MeetTheTeam">
+            <button id="intro-page-button-meettheteam">Meet The Team</button>
           </form>
         </h2>
 
@@ -75,6 +97,9 @@ export default class HomePage extends Component {
         <Switch>
           <Route exact path="/" component={ImplementHomePage} />
           <Route path="/RAT" component={CreateRAT} />
+          <Route path="/About" component={About} />
+          <Route path="/News" component={News} />
+          <Route path="/MeetTheTeam" component={MeetTheTeam} />
         </Switch>
       </Router>
     );
