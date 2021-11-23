@@ -22,7 +22,7 @@ class ImplementHomePage extends Component {
   constructor(props) {
     super(props);
   }
-  
+
 
   /**
    * Notes for myself about this render() function
@@ -32,18 +32,31 @@ class ImplementHomePage extends Component {
    */
   render() {
 
-   
+
 
     return (
 
-      
+
 
       <div class="intro">
-        <h1 class ="logo-header">
-          <span class ="logo">TradePro Reimagined</span>
-          <button id ="intro-page-button">Sample Button</button>
+
+
+        <h1 class="logo-header">
+          <span class="logo">TradePro Reimagined</span>
         </h1>
+
+        <h2>
+          <form action="https://google.com">
+            <button id="intro-page-button">Take The Risk Assessment Test</button>
+          </form>
+        </h2>
+
+
+
+
       </div>
+
+
 
     );
 

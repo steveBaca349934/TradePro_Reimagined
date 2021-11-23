@@ -50,23 +50,24 @@ color: #ffffff;
     opacity: 1;
 }
 
-.logo.active{
-    bottom: 0;
-    opacity: 1;
-    transition: ease-in-out 0.5s;
-}
-
-.logo.fade{
-    bottom:150px;
-    opacity: 0;
-    transition: ease-in-out 0.5s;
-} 
 
 #intro-page-button{
+    position:absolute;
+    background-color: #ffffff;
+    color: black;
+    padding: 0.25em 1.25em;
+    font-size: .6em;
+    outline: none;
+    border: none;
+    border-radius: 1.8em 1.5em 1.5em 0;
+    transition: transform .2s ease;
+    cursor: pointer;
+    top: 50%;
+    left: 42%;
 
-    background-color: #8d8d8d;
-    
-    
+}
 
-
+#intro-page-button:hover{
+    transform: translateY(-5px);
+    box-shadow: 0 2px 2px #ffffff;
 }
