@@ -1,13 +1,16 @@
-from django.urls import path, include
-from django.contrib import admin
-from .views import RoomView, CreateRoomView
+from django.urls import path
+from . import views
 
 urlpatterns = [
-    #path('admin/',admin.site.urls),
-    #path('api',include('api.urls')),
-    path('', include('frontend.urls')),
-    path('create-room', CreateRoomView.as_view())
-    #path('/room/', RoomView)
-    
+        path("",views.index,name="index"),
+        path("customer_service", views.customer_service, name="customer_service"),
+        path("log_in", views.log_in, name="log_in"),
+        path("open_an_account", views.open_an_account, name="open_an_account"),
+        path("profile", views.profile, name="profile")
+
+
+
+
+
 
 ]
