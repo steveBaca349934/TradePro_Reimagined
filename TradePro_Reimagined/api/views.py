@@ -74,6 +74,16 @@ def add_email_and_pw_newacc(request):
 
         print(request.POST)
 
+        if len(request.POST['password']) == 0 and len(request.POST['email']) == 0:
+
+                return render(request, "home/open_an_account.html",{
+                "newacc_form": login_form,
+                "pw_provided": False,
+                "email_provided": False
+
+        })
+
+        
         # First step, ensure that email and 
         # password were both entered        
         if (len(request.POST['email']) == 0):
@@ -90,6 +100,8 @@ def add_email_and_pw_newacc(request):
             "pw_provided": False
 
     })
+
+        
             
 
         return render(request, "home/open_an_account.html",{
