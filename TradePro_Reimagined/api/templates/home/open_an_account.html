@@ -5,6 +5,23 @@
     Open An Account
 </h1>>
 
+<form action="{% url 'add_email_and_pw_newacc' %}" method="post">
+    {% csrf_token %}
+    {{newacc_form}}
+    <input type="submit">
 
+</form>
+
+{% if email_provided == False %}
+<h2>
+    WTF provide an email dude
+</h2>
+{% endif %}
+
+{% if pw_provided == False %}
+<h2>
+    WTF provide an password dude
+</h2>
+{% endif %}
 
 {% endblock %}
