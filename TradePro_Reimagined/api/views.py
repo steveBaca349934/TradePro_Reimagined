@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-#from .forms import *
+from . import forms
 # Create your views here.
 
 
@@ -16,7 +16,23 @@ def customer_service(request):
 
 def log_in(request):
 
-    return render(request, "home/log_in.html")
+    email_form = forms.EmailForm()
+    pw_form = forms.PasswordForm()
+
+    return render(request, "home/log_in.html",{
+        "email_form": email_form,
+        "pw_form": pw_form
+
+
+    })
+
+def add_email(request):
+
+    pass
+
+def add_pw(request):
+
+    pass
 
 def open_an_account(request):
 
@@ -25,3 +41,7 @@ def open_an_account(request):
 def profile(request):
 
     return render(request, "home/profile.html")
+
+def risk_assessment_test(request):
+
+    return render(request, "home/rat.html")

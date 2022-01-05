@@ -1,9 +1,21 @@
 {% extends "home/layout.html" %}
 
 {% block body %}
-<h1>
-    Log In
-</h1>>
+
+<h1>Log In</h1>
+<form action="{% url 'add_email' %}" method="post">
+    {% csrf_token %}
+    {{email_form}}
+    <input type="submit">
+
+</form>
+
+<form action="{% url 'add_pw' %}" method="post">
+    {% csrf_token %}
+    {{pw_form}}
+    <input type="submit">
+
+</form>
 
 
 

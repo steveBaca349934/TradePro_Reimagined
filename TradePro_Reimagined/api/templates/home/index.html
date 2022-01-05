@@ -1,23 +1,29 @@
 {% extends "home/layout.html" %}
-
+{% load static %}
 
 {% block body %}
-<div id = "head_div">
-
+<div id= "outer_div">
+<div id="head_div">
     <ul>
 
 
-        <li class="header_link"><a href="{% url 'customer_service' %}">Customer Service </a></li>
+        <li class="header_link"><img id="logo" src="{% static 'home/images/logo.jpg' %}"> </li>
+    </ul>
+
+    <ul>
+
+        <li class="header_link"><a href="{% url 'customer_service' %}">Customer
+                Service </a></li>
         <li class="header_link"><a href="{% url 'profile' %}">Profile </a></li>
-        <li class="header_link"><a href="{% url 'open_an_account' %}">Open An Account </a></li>
+        <li class="header_link"><a href="{% url 'open_an_account' %}">Open An
+                Account </a></li>
         <li class="header_link"><a href="{% url 'log_in' %}">Log In </a></li>
-
-
+        <li class="header_link"><a href="{% url 'risk_assessment_test' %}">Risk Assessment Test</a></li>
 
     </ul>
 
 </div>
-
+</div>
 
 
 

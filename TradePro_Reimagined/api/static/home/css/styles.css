@@ -2,14 +2,22 @@
     display:flex;
     align-items: center;
     justify-content: center;
-
+    margin-right: 60px;
+    
 
 }
 
+#outer_div{
+    background-color: #3399ff;
+}
 
 .header_link{
 
     display:inline-block;
     margin-right: 20px;
 
+}
+
+#main_body{
+    background-color: chartreuse;
 }
