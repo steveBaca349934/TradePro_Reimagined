@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from . import forms
+from . import forms, models
 # Create your views here.
 
+login_form = forms.LoginForm()
 
 # Create your views here.
 def index(request):
@@ -16,23 +17,27 @@ def customer_service(request):
 
 def log_in(request):
 
-    email_form = forms.EmailForm()
-    pw_form = forms.PasswordForm()
 
     return render(request, "home/log_in.html",{
-        "email_form": email_form,
-        "pw_form": pw_form
-
+        "login_form": login_form,
+        "logged_in_bool": False,
+        "user": " "
 
     })
 
-def add_email(request):
+def add_email_and_pw(request):
 
-    pass
+    if request.method == 'POST':
 
-def add_pw(request):
+        email = request.POST['email']
+        
+        return render(request, "home/log_in.html",{
 
-    pass
+        "login_form": login_form,
+        "logged_in_bool": True,
+        "user": email
+        })
+
 
 def open_an_account(request):
 

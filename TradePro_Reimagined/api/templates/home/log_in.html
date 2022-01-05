@@ -3,19 +3,34 @@
 {% block body %}
 
 <h1>Log In</h1>
-<form action="{% url 'add_email' %}" method="post">
+
+<form action="{% url 'add_email_and_pw' %}" method="post">
     {% csrf_token %}
-    {{email_form}}
+    {{login_form}}
     <input type="submit">
 
 </form>
 
-<form action="{% url 'add_pw' %}" method="post">
-    {% csrf_token %}
-    {{pw_form}}
-    <input type="submit">
 
-</form>
+    {% if logged_in_bool %}
+    <h2>
+        Welcome {{user}} you are currently logged in 
+    </h2>
+    {% else %}
+    <h2>
+        You are not currently logged in, please login, or create an account
+    </h2>
+    <ul>
+        <li>
+            <a href= "{% url 'open_an_account' %}">
+                Open An Account
+            </a>
+        </li>
+    </ul>
+    {% endif %}
+
+
+
 
 
 
