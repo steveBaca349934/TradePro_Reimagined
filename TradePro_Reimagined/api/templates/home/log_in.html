@@ -4,7 +4,7 @@
 
 <h1>Log In</h1>
 
-<form action="{% url 'add_email_and_pw_login' %}" method="post">
+<form action="{% url 'log_in' %}" method="post">
     {% csrf_token %}
     {{login_form}}
     <input type="submit">
@@ -20,14 +20,40 @@
     <h2>
         You are not currently logged in, please login, or create an account
     </h2>
+    {% endif %}
+    {% if email_not_found == True %}
+    <h2>
+        {{user}} Is Not A Valid Email
+    </h2>
+    {% endif %}
+    {% if incorrect_pw == True %}
+    <h2>
+        That Was The Wrong P-Dub My Boy
+    </h2>
+    {% endif %}
+    {% if email_provided == False %}
+    <h2>
+        WTF provide an email dude
+    </h2>
+    {% endif %}
+    
+    {% if pw_provided == False %}
+    <h2>
+        WTF provide an password dude
+    </h2>
+    {% endif %}
     <ul>
         <li>
             <a href= "{% url 'open_an_account' %}">
                 Open An Account
             </a>
         </li>
+        <li>
+            <a href= "{% url 'index' %}">
+                Home
+            </a>
+        </li>
     </ul>
-    {% endif %}
 
 
 

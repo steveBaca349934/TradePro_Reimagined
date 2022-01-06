@@ -15,17 +15,8 @@ def customer_service(request):
 
     return render(request, "home/customer_service.html")
 
+
 def log_in(request):
-
-
-    return render(request, "home/log_in.html",{
-        "login_form": login_form,
-        "logged_in_bool": False,
-        "user": " "
-
-    })
-
-def add_email_and_pw_login(request):
     """
     provides functionality to allow a user to login
 
@@ -35,14 +26,86 @@ def add_email_and_pw_login(request):
     # Also need to percolate and persist across this users entire session
 
     if request.method == 'POST':
+    
 
         email = request.POST['email']
+        pw = request.POST['password']
+
+        if len(pw) == 0 and len(email) == 0:
+
+                return render(request, "home/log_in.html",{
+                "login_form": login_form,
+                "pw_provided": False,
+                "email_provided": False
+
+        })
+
         
-        return render(request, "home/log_in.html",{
+        # First step, ensure that email and 
+        # password were both entered        
+        elif (len(email) == 0):
+            return render(request, "home/log_in.html",{
+            "login_form": login_form,
+            "email_provided": False
+
+    })
+
+        elif len(pw) == 0:
+
+            return render(request, "home/log_in.html",{
+            "login_form": login_form,
+            "pw_provided": False
+
+    })
+
+        elif len(pw) >=1 and len(email) >=1:
+
+            all_users = models.User.objects.all()
+
+            emails_to_pws = dict()
+
+            for users in all_users:
+
+                emails_to_pws[users.email] = users.password
+
+            # actually checking if the email provided 
+            # and password are correct            
+            if email in emails_to_pws:
+
+                if emails_to_pws[email] == pw:
+
+                
+
+                    return render(request, "home/log_in.html",{
+
+                            "login_form": login_form,
+                            "logged_in_bool": True,
+                            "user": email
+
+                            })
+
+                else:
+
+                    return render(request, "home/log_in.html",{
+
+                    "login_form": login_form,
+                    "incorrect_pw": True
+                    })
+
+            else:
+
+                return render(request, "home/log_in.html",{
+
+                    "login_form": login_form,
+                    "email_not_found": True,
+                    "user": email
+                    })
+
+
+    return render(request, "home/log_in.html",{
 
         "login_form": login_form,
-        "logged_in_bool": True,
-        "user": email
+        "logged_in_bool": False
         })
 
 

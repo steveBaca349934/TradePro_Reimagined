@@ -8,7 +8,7 @@ urlpatterns = [
         path("open_an_account", views.open_an_account, name="open_an_account"),
         path("profile", views.profile, name="profile"),
         path("risk_assessment_test", views.risk_assessment_test, name="risk_assessment_test"),
-        path("add_email_and_pw_login", views.add_email_and_pw_login, name="add_email_and_pw_login"),
+        # path("add_email_and_pw_login", views.add_email_and_pw_login, name="add_email_and_pw_login"),
         path("add_email_and_pw_newacc", views.add_email_and_pw_newacc, name="add_email_and_pw_newacc")
 
 
