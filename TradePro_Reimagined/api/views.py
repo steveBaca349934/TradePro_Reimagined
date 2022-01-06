@@ -9,7 +9,24 @@ login_form = forms.LoginForm()
 # Create your views here.
 def index(request):
 
-    return render(request, "home/index.html")
+    
+
+    if request.session.get('logged_in') == True:
+
+        return render(request, "home/index.html",{
+            "logged_in": True,
+            "user":request.session.get("user")
+
+        })
+
+    else:
+
+        return render(request, "home/index.html",{
+            "logged_in": False
+
+        })
+
+
 
 def customer_service(request):
 
@@ -74,8 +91,10 @@ def log_in(request):
 
                 if emails_to_pws[email] == pw:
 
-                
+                    request.session['user'] = email
+                    request.session['logged_in'] = True
 
+                
                     return render(request, "home/log_in.html",{
 
                             "login_form": login_form,

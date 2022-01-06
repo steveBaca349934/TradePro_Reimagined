@@ -2,6 +2,23 @@
 {% load static %}
 
 {% block body %}
+<div>
+    <h1>
+        User
+    </h1>
+
+  
+</div>
+{% if logged_in == True %}
+<h2>
+    Welcome {{user}}, you are logged in 
+</h2>
+{% else %}
+<h2>
+Login Fool !  
+</h2>
+{% endif %}
+
 <div id= "outer_div">
 <div id="head_div">
     <ul>
