@@ -73,8 +73,10 @@ def add_email_and_pw_newacc(request):
     if request.method == 'POST':
 
         print(request.POST)
+        pw = request.POST['password']
+        email = request.POST['email']
 
-        if len(request.POST['password']) == 0 and len(request.POST['email']) == 0:
+        if len(pw) == 0 and len(email) == 0:
 
                 return render(request, "home/open_an_account.html",{
                 "newacc_form": login_form,
@@ -86,14 +88,14 @@ def add_email_and_pw_newacc(request):
         
         # First step, ensure that email and 
         # password were both entered        
-        if (len(request.POST['email']) == 0):
+        elif (len(email) == 0):
             return render(request, "home/open_an_account.html",{
             "newacc_form": login_form,
             "email_provided": False
 
     })
 
-        if len(request.POST['password']) == 0:
+        elif len(pw) == 0:
 
             return render(request, "home/open_an_account.html",{
             "newacc_form": login_form,
@@ -101,7 +103,32 @@ def add_email_and_pw_newacc(request):
 
     })
 
-        
+        elif len(pw) >=1 and len(email) >=1:
+            #need to check if this user's email is already in the database
+
+            all_users = models.User.objects.all()
+
+            cur_emails = set()
+
+            for users in all_users:
+                cur_emails.add(users.email)
+
+            if email in cur_emails:
+
+                return render(request, "home/open_an_account.html",{
+                "newacc_form": login_form,
+                "email_taken": True
+
+                })
+
+            else:
+
+                new_user = models.User(email = email, password = pw)
+                new_user.save()
+
+
+            
+            
             
 
         return render(request, "home/open_an_account.html",{
