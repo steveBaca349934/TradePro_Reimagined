@@ -11,16 +11,7 @@
 
 </form>
 
-
-    {% if logged_in_bool %}
-    <h2>
-        Welcome {{user}} you are currently logged in 
-    </h2>
-    {% else %}
-    <h2>
-        You are not currently logged in, please login, or create an account
-    </h2>
-    {% endif %}
+    
     {% if email_not_found == True %}
     <h2>
         {{user}} Is Not A Valid Email

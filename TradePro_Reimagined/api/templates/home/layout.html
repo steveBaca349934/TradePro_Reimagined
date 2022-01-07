@@ -10,6 +10,27 @@
 
     </head>
 
+
+<div>
+    <h1>
+        User
+    </h1>
+
+{% if logged_in == True %}
+<h3>
+    {{user}} 
+    <li class="header_link"><a href="{% url 'log_out' %}">Log Out </a></li>
+</h3>
+{% else %}
+<h3>
+Please Login 
+</h3>
+{% endif %}
+</div>
+
+
+
+
     <body id = "main_body">
         
 

@@ -1,35 +1,68 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from . import forms, models
+from . import forms, models, utils
 # Create your views here.
+from django.views import View
 
 login_form = forms.LoginForm()
+
+"""
+Global session variables:
+    logged_in = boolean value for whether a user is logged in or not
+    user = user that is logged in
+
+"""
 
 # Create your views here.
 def index(request):
 
-    
-    if request.session.get('logged_in') == True:
 
-        return render(request, "home/index.html",{
-            "logged_in": True,
+    return render(request, "home/index.html",{
+            "logged_in": request.session.get('logged_in'),
             "user":request.session.get("user")
-
-        })
-
-    else:
-
-        return render(request, "home/index.html",{
-            "logged_in": False
-
-        })
-
-
-
+    })
+    
+    
 def customer_service(request):
 
-    return render(request, "home/customer_service.html")
+    return render(request, "home/customer_service.html",{
+        "logged_in": request.session.get('logged_in'),
+        "user":request.session.get("user")
+    })
+
+def log_out(request):
+    """
+    Sets the session variables for logged in to false
+    and user to None
+
+    Note * They are still technically in the same session
+
+    redirects to the home page
+    """
+
+    
+
+    #user.session_set.all().delete()
+
+    # This might not be necessary because Im deleting 
+    # the session anyways...
+    if 'logged_in' in request.session:
+
+        request.session['logged_in'] = False
+
+    if 'user' in request.session:
+
+        request.session['user'] = None
+
+
+    # print("the current session user is:")
+    # print(request.session.objects.all())
+    #request.session.get("user").session_set.all().delete()
+
+
+    # return to the homepage
+    return index(request)
 
 
 def log_in(request):
@@ -38,93 +71,104 @@ def log_in(request):
 
     returns the login page with either success or failure message
     """
-    # TODO: Actually take email and password and check vs models.py that this is an actual user
-    # Also need to percolate and persist across this users entire session
+    # First check to see if a user is logged in 
 
-    if request.method == 'POST':
-    
+    if request.session.get('logged_in'):
 
-        email = request.POST['email']
-        pw = request.POST['password']
+        return render(request, "home/log_in.html",{
 
-        if len(pw) == 0 and len(email) == 0:
+        # "login_form": login_form,
+        "logged_in": request.session.get('logged_in'),
+        "user":request.session.get("user")
+        })
 
+    else:
+
+        if request.method == 'POST':
+            
+            email = request.POST['email']
+            pw = request.POST['password']
+
+            if len(pw) == 0 and len(email) == 0:
+
+                    return render(request, "home/log_in.html",{
+                    "login_form": login_form,
+                    "pw_provided": False,
+                    "email_provided": False
+
+            })
+
+            
+            # First step, ensure that email and 
+            # password were both entered        
+            elif (len(email) == 0):
                 return render(request, "home/log_in.html",{
                 "login_form": login_form,
-                "pw_provided": False,
                 "email_provided": False
 
         })
 
-        
-        # First step, ensure that email and 
-        # password were both entered        
-        elif (len(email) == 0):
-            return render(request, "home/log_in.html",{
-            "login_form": login_form,
-            "email_provided": False
+            elif len(pw) == 0:
 
-    })
+                return render(request, "home/log_in.html",{
+                "login_form": login_form,
+                "pw_provided": False
 
-        elif len(pw) == 0:
+        })
 
-            return render(request, "home/log_in.html",{
-            "login_form": login_form,
-            "pw_provided": False
+            elif len(pw) >=1 and len(email) >=1:
 
-    })
+                all_users = models.User.objects.all()
 
-        elif len(pw) >=1 and len(email) >=1:
+                emails_to_pws = dict()
 
-            all_users = models.User.objects.all()
+                for users in all_users:
 
-            emails_to_pws = dict()
+                    emails_to_pws[users.email] = users.password
 
-            for users in all_users:
+                # actually checking if the email provided 
+                # and password are correct            
+                if email in emails_to_pws:
 
-                emails_to_pws[users.email] = users.password
+                    if emails_to_pws[email] == pw:
 
-            # actually checking if the email provided 
-            # and password are correct            
-            if email in emails_to_pws:
+                        request.session['user'] = email
+                        request.session['logged_in'] = True
 
-                if emails_to_pws[email] == pw:
+                    
+                        return render(request, "home/log_in.html",{
 
-                    request.session['user'] = email
-                    request.session['logged_in'] = True
+                                "login_form": login_form,
+                                "logged_in_bool": True,
+                                "user": email
 
-                
-                    return render(request, "home/log_in.html",{
+                                })
 
-                            "login_form": login_form,
-                            "logged_in_bool": True,
-                            "user": email
+                    else:
 
-                            })
+                        return render(request, "home/log_in.html",{
+
+                        "login_form": login_form,
+                        "incorrect_pw": True
+                        })
 
                 else:
 
                     return render(request, "home/log_in.html",{
 
-                    "login_form": login_form,
-                    "incorrect_pw": True
-                    })
-
-            else:
-
-                return render(request, "home/log_in.html",{
-
-                    "login_form": login_form,
-                    "email_not_found": True,
-                    "user": email
-                    })
-
+                        "login_form": login_form,
+                        "email_not_found": True,
+                        "user": email
+                        })
 
     return render(request, "home/log_in.html",{
 
-        "login_form": login_form,
-        "logged_in_bool": False
+         "login_form": login_form,
+        "logged_in": request.session.get('logged_in'),
+        "user":request.session.get("user")
         })
+
+
 
 
 def open_an_account(request):
