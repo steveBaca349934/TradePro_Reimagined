@@ -10,7 +10,6 @@ login_form = forms.LoginForm()
 def index(request):
 
     
-
     if request.session.get('logged_in') == True:
 
         return render(request, "home/index.html",{
