@@ -2,3 +2,4 @@ db.sqlite3
 /Users/stevebaca/PycharmProjects/TradePro_Reimagined/TradePro_Reimagined/frontend/node_modules
 *__pycache__*
 *.ipynb_checkpoints
+tradepro_venv/*

@@ -17,10 +17,14 @@
     <li>{{ elem }} Was Not Provded</li>
     {% endfor %}
 
-    {% if incorrect_pw == True %}
-    <li>We Were Unable To Log You In, Try Again</li>
+    {% if incorrect_user == True %}
+    <li>{{attempted_user}} Is Not A Valid Username, Try Again</li>
     {% endif %}
-    
+
+    {% if incorrect_pw == True %}
+    <li>Your Password Is Not Valid, Try Again</li>
+    {% endif %}
+
 </ul>
 
 <ul>

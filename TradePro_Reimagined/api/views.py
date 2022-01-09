@@ -43,11 +43,9 @@ def log_out(request):
 
     redirects to the home page
     """
-
+    # built in django command to clear session
     logout(request)
 
-    # clear current session
-    #request.session.flush()
 
     # redirect to the home page
     return HttpResponseRedirect(reverse('index'))
@@ -106,23 +104,33 @@ def log_in(request):
                 request.session['user'] = username
                 request.session['logged_in'] = True
 
-                return render(request, "home/log_in.html",{
+                #redirect to home page
+                return HttpResponseRedirect(reverse('index'))
 
-                        "login_form": login_form,
-                        "logged_in": request.session.get('logged_in'),
-                        "user":request.session.get("user")
-                        })
-
-            # the authentication failed
+            # authentication failed logic
             else:
 
-                return render(request, "home/log_in.html",{
+                username_list = User.objects.values_list('username', flat = True)
+                
+                # the username was not valid
+                if username not in username_list:
 
-                "login_form": login_form,
-                "incorrect_pw": True
-                })
+                    return render(request, "home/log_in.html",{
 
-        
+                    "login_form": login_form,
+                    "incorrect_user": True,
+                    "attempted_user": username
+                    })
+
+                # the password was not valid
+                else:
+
+                    return render(request, "home/log_in.html",{
+
+                    "login_form": login_form,
+                    "incorrect_pw": True
+                    })
+
     return render(request, "home/log_in.html",{
 
          "login_form": login_form,
@@ -134,6 +142,7 @@ def log_in(request):
 
 
 def open_an_account(request):
+
     """
     Rendering of open_an_account page. Also
     handles logic for creating a user. Enforces
@@ -176,12 +185,14 @@ def open_an_account(request):
             #need to check if this user's email is already in the database
             all_users = User.objects.all()
 
-            cur_emails = set()
-            cur_usernames = set()
+            # = User.objects.values_list('username', flat = True)
 
-            for users in all_users:
-                cur_emails.add(users.email)
-                cur_usernames.add(users.username)
+            cur_emails = User.objects.values_list('email', flat = True)
+            cur_usernames = User.objects.values_list('username', flat = True)
+
+            # for users in all_users:
+            #     cur_emails.add(users.email)
+            #     cur_usernames.add(users.username)
 
             # in this case the email and username are both taken                      
             if (email in cur_emails) and (username in cur_usernames):
@@ -223,6 +234,22 @@ def open_an_account(request):
                 "successful_creation": False
 
                 })    
+
+            elif utils.check_pw_is_robust(pw) == False:
+
+                #return prescription for more advanced PW
+
+                return render(request, "home/open_an_account.html",{
+                "newacc_form": account_creation_form,
+                "email_taken": False,
+                "email" :email,
+                "username_taken": False,
+                "username":username,
+                "incorrect_pw_format" :True,
+                "successful_creation": False
+
+                }) 
+                
 
 
             else:

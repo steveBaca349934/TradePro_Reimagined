@@ -23,11 +23,20 @@
     {%if username_taken == True %}
     <li>The Username {{username}} Is Taken</li>
     {% endif %}
+
+    {%if incorrect_pw_format == True %}
+    <li>Your Attempted Password Is Formatted Incorrectly, Please use a minimum of 12 characters, with a minimum of 2 digits and a minimum of 1 special character</li>
+    {% endif %}
+
     {% if successful_creation == False%}
     <li>Your Attempt At Account Creation Failed </li>
-    {% else %}
+    {% endif %}
+
+    {% if successful_creation == True %}
     <li>Your Attempt At Account Creation Was A Success </li>
     {% endif %}
+
+    
 
 </ul>
 
