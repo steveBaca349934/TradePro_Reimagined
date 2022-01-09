@@ -21,7 +21,6 @@ Global session variables:
 # Create your views here.
 def index(request):
 
-
     return render(request, "home/index.html",{
             "logged_in": request.session.get('logged_in'),
             "user":request.session.get("user")
@@ -45,17 +44,13 @@ def log_out(request):
     redirects to the home page
     """
 
-    if 'logged_in' in request.session:
+    logout(request)
 
-        request.session['logged_in'] = False
+    # clear current session
+    #request.session.flush()
 
-    if 'user' in request.session:
-
-        request.session['user'] = None
-
-
-    # return to the homepage
-    return index(request)
+    # redirect to the home page
+    return HttpResponseRedirect(reverse('index'))
 
 
 def log_in(request):
@@ -233,12 +228,30 @@ def open_an_account(request):
             else:
                 
                 #else we can actually create a new user
-                new_user = User.objects.create_user(username,email = email, password = pw)
+                new_user = User.objects.create_user(username, email = email, password = pw)
                 new_user.first_name = first_name
                 new_user.last_name = last_name
                 new_user.save()
 
-                print(" a new user was saved")
+                # log user in
+                user = authenticate(request, username=username, password=pw)
+
+                if user is not None:
+                
+                    request.session['user'] = username
+                    request.session['logged_in'] = True
+
+                    # redirect to the home page
+                    return HttpResponseRedirect(reverse('index'))
+
+                # the authentication failed
+                else:
+
+                    return render(request, "home/log_in.html",{
+
+                    "login_form": login_form,
+                    "incorrect_pw": True
+                    })
 
 
 
