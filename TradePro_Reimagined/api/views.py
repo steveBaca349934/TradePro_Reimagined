@@ -140,18 +140,13 @@ def log_in(request):
 
 def open_an_account(request):
     """
-    Basic rendering of open_an_account page
+    Rendering of open_an_account page. Also
+    handles logic for creating a user. Enforces
+    that there must be unique username and email
 
     returns render
     """
 
-    #user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
-
-    # username
-    # password
-    # email
-    # first_name
-    # last_name
 
     if request.method == 'POST':
 
@@ -175,33 +170,75 @@ def open_an_account(request):
 
             return render(request, "home/open_an_account.html",{
                 "newacc_form": account_creation_form,
-                "not_provided": not_provided
+                "not_provided": not_provided,
+                "successful_creation": False
 
         })
 
 
-    #     elif len(pw) >=1 and len(email) >=1:
-    #         #need to check if this user's email is already in the database
+        else:
 
-    #         all_users = models.User.objects.all()
+            #need to check if this user's email is already in the database
+            all_users = User.objects.all()
 
-    #         cur_emails = set()
+            cur_emails = set()
+            cur_usernames = set()
 
-    #         for users in all_users:
-    #             cur_emails.add(users.email)
+            for users in all_users:
+                cur_emails.add(users.email)
+                cur_usernames.add(users.username)
 
-    #         if email in cur_emails:
+            # in this case the email and username are both taken                      
+            if (email in cur_emails) and (username in cur_usernames):
 
-    #             return render(request, "home/open_an_account.html",{
-    #             "newacc_form": login_form,
-    #             "email_taken": True
+                return render(request, "home/open_an_account.html",{
+                "newacc_form": account_creation_form,
+                "email_taken": True,
+                "email":email,
+                "username_taken": True,
+                "username":username,
+                "successful_creation": False
 
-    #             })
 
-    #         else:
+                })
 
-    #             new_user = models.User(email = email, password = pw)
-    #             new_user.save()
+            # in this case the username is taken
+            elif username in cur_usernames:
+
+                return render(request, "home/open_an_account.html",{
+                "newacc_form": account_creation_form,
+                "email_taken": False,
+                "email":email,
+                "username_taken": True,
+                "username":username,
+                "successful_creation": False
+
+
+                })
+
+            # in this case the email is taken
+            elif email in cur_emails:
+
+                return render(request, "home/open_an_account.html",{
+                "newacc_form": account_creation_form,
+                "email_taken": True,
+                "email":email,
+                "username_taken": False,
+                "username":username,
+                "successful_creation": False
+
+                })    
+
+
+            else:
+                
+                #else we can actually create a new user
+                new_user = User.objects.create_user(username,email = email, password = pw)
+                new_user.first_name = first_name
+                new_user.last_name = last_name
+                new_user.save()
+
+                print(" a new user was saved")
 
 
 

@@ -15,9 +15,20 @@
     {% for elem in not_provided %}
     <li>{{ elem }} Was Not Provded</li>
     {% endfor %}
-</ul>
-<ul>
-    Your Attempt At Account Creation Failed 
+
+    {% if email_taken == True%}
+    <li>The Email {{email}} Is Taken</li>
+    {% endif %}
+
+    {%if username_taken == True %}
+    <li>The Username {{username}} Is Taken</li>
+    {% endif %}
+    {% if successful_creation == False%}
+    <li>Your Attempt At Account Creation Failed </li>
+    {% else %}
+    <li>Your Attempt At Account Creation Was A Success </li>
+    {% endif %}
+
 </ul>
 
 <ul>
