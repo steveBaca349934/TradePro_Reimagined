@@ -18,6 +18,42 @@ Global session variables:
 
 """
 
+class BaseView(View):
+
+
+    def _setup_view(self,request):
+
+        self.dict = {
+            "logged_in": request.session.get('logged_in'),
+            "user":request.session.get("user")
+        }
+
+    
+    def get(self, request):
+        self._setup_view(request)
+        
+
+        #return render(request, f"home/{html_name}.html",self.dict)
+
+    def post(self, request):
+        self._setup_view(request)
+        
+
+        #return render(request, f"home/{html_name}.html",self.dict)
+
+class Index(BaseView):
+
+    def get(self, request):
+        self._setup_view(request)
+
+        return render(request, "home/index.html",self.dict)
+
+    def post(self, request):
+        pass
+
+
+    
+
 # Create your views here.
 def index(request):
 
@@ -142,7 +178,6 @@ def log_in(request):
 
 
 def open_an_account(request):
-
     """
     Rendering of open_an_account page. Also
     handles logic for creating a user. Enforces
@@ -183,16 +218,8 @@ def open_an_account(request):
         else:
 
             #need to check if this user's email is already in the database
-            all_users = User.objects.all()
-
-            # = User.objects.values_list('username', flat = True)
-
             cur_emails = User.objects.values_list('email', flat = True)
             cur_usernames = User.objects.values_list('username', flat = True)
-
-            # for users in all_users:
-            #     cur_emails.add(users.email)
-            #     cur_usernames.add(users.username)
 
             # in this case the email and username are both taken                      
             if (email in cur_emails) and (username in cur_usernames):
