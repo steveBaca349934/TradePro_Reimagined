@@ -10,16 +10,10 @@ from django.views import View
 login_form = forms.LoginForm()
 account_creation_form = forms.AccountCreationForm()
 
-"""
-Global session variables:
-    logged_in = boolean value for whether a user is logged in or not
-    user = username that is logged in
-    email = email that is logged in
-
-"""
-
 class BaseView(View):
 
+    # If you want every class based view to have access to some 
+    # piece of session data, change it here and then change layout.html
 
     def _setup_view(self,request):
 
@@ -50,25 +44,39 @@ class Index(BaseView):
 
     def post(self, request):
         pass
-
-
     
 
-# Create your views here.
-def index(request):
+class CustomerService(BaseView):
 
-    return render(request, "home/index.html",{
-            "logged_in": request.session.get('logged_in'),
-            "user":request.session.get("user")
-    })
-    
-    
-def customer_service(request):
+    def get(self, request):
+        self._setup_view(request)
 
-    return render(request, "home/customer_service.html",{
-        "logged_in": request.session.get('logged_in'),
-        "user":request.session.get("user")
-    })
+        return render(request, "home/customer_service.html",self.dict)
+
+    def post(self, request):
+        pass
+
+class Profile(BaseView):
+
+    def get(self, request):
+
+        self._setup_view(request)
+
+        return render(request, "home/profile.html",self.dict)
+
+    def post(self, request):
+        pass
+
+class RAT(BaseView):
+
+    def get(self, request):
+
+        self._setup_view(request)
+
+        return render(request, "home/rat.html",self.dict)
+
+    def post(self, request):
+        pass
 
 def log_out(request):
     """
@@ -97,12 +105,7 @@ def log_in(request):
     # First check to see if a user is logged in 
     if request.session.get('logged_in'):
 
-        return render(request, "home/log_in.html",{
-
-        # "login_form": login_form,
-        "logged_in": request.session.get('logged_in'),
-        "user":request.session.get("user")
-        })
+        return HttpResponseRedirect(reverse('index'))
 
     # if the user isn't logged in, need to help them 
     # login
@@ -186,8 +189,14 @@ def open_an_account(request):
     returns render
     """
 
+    # if the user is already logged in, just redirect to home page
+    if request.session.get('logged_in') == True:
 
-    if request.method == 'POST':
+        return HttpResponseRedirect(reverse('index'))
+
+
+
+    elif request.method == 'POST':
 
         email = request.POST['email']
         username = request.POST['username']
@@ -315,10 +324,3 @@ def open_an_account(request):
     })
 
 
-def profile(request):
-
-    return render(request, "home/profile.html")
-
-def risk_assessment_test(request):
-
-    return render(request, "home/rat.html")

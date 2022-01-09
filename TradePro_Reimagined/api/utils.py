@@ -11,9 +11,6 @@ def check_pw_is_robust(pw:str)->bool:
     returns True or False
     """
 
-    print("pw is:")
-    print(pw)
-
     if len(pw) < 12:
         return False
 
