@@ -11,40 +11,30 @@
 
 </form>
 
-    
-    {% if email_not_found == True %}
-    <h2>
-        {{user}} Is Not A Valid Email
-    </h2>
-    {% endif %}
+
+<ul>
+    {% for elem in not_provided %}
+    <li>{{ elem }} Was Not Provded</li>
+    {% endfor %}
+
     {% if incorrect_pw == True %}
-    <h2>
-        That Was The Wrong P-Dub My Boy
-    </h2>
-    {% endif %}
-    {% if email_provided == False %}
-    <h2>
-        WTF provide an email dude
-    </h2>
+    <li>We Were Unable To Log You In, Try Again</li>
     {% endif %}
     
-    {% if pw_provided == False %}
-    <h2>
-        WTF provide an password dude
-    </h2>
-    {% endif %}
-    <ul>
-        <li>
-            <a href= "{% url 'open_an_account' %}">
-                Open An Account
-            </a>
-        </li>
-        <li>
-            <a href= "{% url 'index' %}">
-                Home
-            </a>
-        </li>
-    </ul>
+</ul>
+
+<ul>
+    <li>
+        <a href="{% url 'open_an_account' %}">
+            Open An Account
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'index' %}">
+            Home
+        </a>
+    </li>
+</ul>
 
 
 

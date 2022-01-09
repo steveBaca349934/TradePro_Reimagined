@@ -1,16 +1,20 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from . import forms, models, utils
 # Create your views here.
 from django.views import View
 
 login_form = forms.LoginForm()
+account_creation_form = forms.AccountCreationForm()
 
 """
 Global session variables:
     logged_in = boolean value for whether a user is logged in or not
-    user = user that is logged in
+    user = username that is logged in
+    email = email that is logged in
 
 """
 
@@ -41,12 +45,6 @@ def log_out(request):
     redirects to the home page
     """
 
-    
-
-    #user.session_set.all().delete()
-
-    # This might not be necessary because Im deleting 
-    # the session anyways...
     if 'logged_in' in request.session:
 
         request.session['logged_in'] = False
@@ -54,11 +52,6 @@ def log_out(request):
     if 'user' in request.session:
 
         request.session['user'] = None
-
-
-    # print("the current session user is:")
-    # print(request.session.objects.all())
-    #request.session.get("user").session_set.all().delete()
 
 
     # return to the homepage
@@ -71,8 +64,8 @@ def log_in(request):
 
     returns the login page with either success or failure message
     """
-    # First check to see if a user is logged in 
 
+    # First check to see if a user is logged in 
     if request.session.get('logged_in'):
 
         return render(request, "home/log_in.html",{
@@ -82,85 +75,59 @@ def log_in(request):
         "user":request.session.get("user")
         })
 
-    else:
+    # if the user isn't logged in, need to help them 
+    # login
+    elif request.method == 'POST':
 
-        if request.method == 'POST':
+        username = request.POST['username']
+        pw = request.POST['password']
+
+        #first need to dynamically check and ensure everything was correctly entered
+        not_provided = []
+
+        for elem in request.POST:
+
+            if len(request.POST[elem]) == 0:
+
+                not_provided.append(elem.capitalize())
+
+        # in this case, some element was not correctly provided during
+        # the users attempt to login
+        if len(not_provided) > 0:
             
-            email = request.POST['email']
-            pw = request.POST['password']
-
-            if len(pw) == 0 and len(email) == 0:
-
-                    return render(request, "home/log_in.html",{
+            return render(request, "home/log_in.html",{
                     "login_form": login_form,
-                    "pw_provided": False,
-                    "email_provided": False
+                    "not_provided": not_provided
 
             })
 
-            
-            # First step, ensure that email and 
-            # password were both entered        
-            elif (len(email) == 0):
-                return render(request, "home/log_in.html",{
-                "login_form": login_form,
-                "email_provided": False
+        # the user entered both a password and username
+        else:
 
-        })
+            user = authenticate(request, username=username, password=pw)
 
-            elif len(pw) == 0:
+            if user is not None:
+                
+                request.session['user'] = username
+                request.session['logged_in'] = True
 
                 return render(request, "home/log_in.html",{
+
+                        "login_form": login_form,
+                        "logged_in": request.session.get('logged_in'),
+                        "user":request.session.get("user")
+                        })
+
+            # the authentication failed
+            else:
+
+                return render(request, "home/log_in.html",{
+
                 "login_form": login_form,
-                "pw_provided": False
+                "incorrect_pw": True
+                })
 
-        })
-
-            elif len(pw) >=1 and len(email) >=1:
-
-                all_users = models.User.objects.all()
-
-                emails_to_pws = dict()
-
-                for users in all_users:
-
-                    emails_to_pws[users.email] = users.password
-
-                # actually checking if the email provided 
-                # and password are correct            
-                if email in emails_to_pws:
-
-                    if emails_to_pws[email] == pw:
-
-                        request.session['user'] = email
-                        request.session['logged_in'] = True
-
-                    
-                        return render(request, "home/log_in.html",{
-
-                                "login_form": login_form,
-                                "logged_in_bool": True,
-                                "user": email
-
-                                })
-
-                    else:
-
-                        return render(request, "home/log_in.html",{
-
-                        "login_form": login_form,
-                        "incorrect_pw": True
-                        })
-
-                else:
-
-                    return render(request, "home/log_in.html",{
-
-                        "login_form": login_form,
-                        "email_not_found": True,
-                        "user": email
-                        })
-
+        
     return render(request, "home/log_in.html",{
 
          "login_form": login_form,
@@ -178,90 +145,71 @@ def open_an_account(request):
     returns render
     """
 
+    #user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
 
-    return render(request, "home/open_an_account.html",{
-        "newacc_form": login_form
-
-
-
-    })
-
-def add_email_and_pw_newacc(request):
-    """
-    Provides functionality that allows a user
-    to actually create an account... adds email and pw
-    to database
-
-    returns render
-    """
+    # username
+    # password
+    # email
+    # first_name
+    # last_name
 
     if request.method == 'POST':
 
-        print(request.POST)
-        pw = request.POST['password']
         email = request.POST['email']
+        username = request.POST['username']
+        pw = request.POST['password']
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
 
-        if len(pw) == 0 and len(email) == 0:
+        
+        not_provided = []
 
-                return render(request, "home/open_an_account.html",{
-                "newacc_form": login_form,
-                "pw_provided": False,
-                "email_provided": False
+        for elem in request.POST:
+
+            if len(request.POST[elem]) == 0:
+
+                not_provided.append(elem)
+
+        # in this case, some element was not correctly provideds
+        if len(not_provided) > 0:
+
+            return render(request, "home/open_an_account.html",{
+                "newacc_form": account_creation_form,
+                "not_provided": not_provided
 
         })
 
-        
-        # First step, ensure that email and 
-        # password were both entered        
-        elif (len(email) == 0):
-            return render(request, "home/open_an_account.html",{
-            "newacc_form": login_form,
-            "email_provided": False
+
+    #     elif len(pw) >=1 and len(email) >=1:
+    #         #need to check if this user's email is already in the database
+
+    #         all_users = models.User.objects.all()
+
+    #         cur_emails = set()
+
+    #         for users in all_users:
+    #             cur_emails.add(users.email)
+
+    #         if email in cur_emails:
+
+    #             return render(request, "home/open_an_account.html",{
+    #             "newacc_form": login_form,
+    #             "email_taken": True
+
+    #             })
+
+    #         else:
+
+    #             new_user = models.User(email = email, password = pw)
+    #             new_user.save()
+
+
+
+    return render(request, "home/open_an_account.html",{
+        "newacc_form": account_creation_form
 
     })
 
-        elif len(pw) == 0:
-
-            return render(request, "home/open_an_account.html",{
-            "newacc_form": login_form,
-            "pw_provided": False
-
-    })
-
-        elif len(pw) >=1 and len(email) >=1:
-            #need to check if this user's email is already in the database
-
-            all_users = models.User.objects.all()
-
-            cur_emails = set()
-
-            for users in all_users:
-                cur_emails.add(users.email)
-
-            if email in cur_emails:
-
-                return render(request, "home/open_an_account.html",{
-                "newacc_form": login_form,
-                "email_taken": True
-
-                })
-
-            else:
-
-                new_user = models.User(email = email, password = pw)
-                new_user.save()
-
-
-            
-            
-            
-
-        return render(request, "home/open_an_account.html",{
-        "newacc_form": login_form
-
-
-
-    })
 
 def profile(request):
 
