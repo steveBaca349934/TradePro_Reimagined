@@ -52,4 +52,18 @@ class RecoveryQuestions(forms.Form):
     widget= forms.TextInput
     (attrs={'placeholder':'Question Two'}))
 
+class RecoverAccountForm(forms.Form):
+
+    username = forms.CharField(label="Username",required= False,
+    widget= forms.TextInput
+    (attrs={'placeholder':'Username'}))
+
+    question_one = forms.CharField(label="Question One, what was your first grade teacher\'s name ? ",required= False,
+    widget= forms.TextInput
+    (attrs={'placeholder':'Question One'}))
+
+    question_two = forms.CharField(label="Question Two, what was/is your favorite pet\'s name ? ",required= False,
+    widget= forms.TextInput
+    (attrs={'placeholder':'Question Two'}))
+
 

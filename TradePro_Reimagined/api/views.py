@@ -12,6 +12,7 @@ login_form = forms.LoginForm()
 account_creation_form = forms.AccountCreationForm()
 change_pdub = forms.ChangePDub()
 recovery_questions_form = forms.RecoveryQuestions()
+recover_account_form = forms.RecoverAccountForm()
 
 class BaseView(View):
 
@@ -39,6 +40,64 @@ class BaseView(View):
         
 
         #return render(request, f"home/{html_name}.html",self.dict)
+
+class RecoverAccount(BaseView):
+
+    def get(self, request):
+        super(RecoverAccount, self).get(request)
+
+        # if they're logged in, redirect to profile page
+        if request.session.get('logged_in'):
+
+            return HttpResponseRedirect(reverse('profile'))
+
+        self.dict['form'] = recover_account_form
+        return render(request, "home/recover_account.html",self.dict)
+
+    def post(self, request):
+        super(RecoverAccount, self).post(request)
+
+        #first need to dynamically check and ensure everything was correctly entered
+        not_provided = []
+
+        for elem in request.POST:
+
+            if len(request.POST[elem]) == 0:
+
+                not_provided.append(elem.capitalize())
+
+        if len(not_provided) > 0:
+
+            self.dict['form'] = recover_account_form
+            self.dict['not_provided'] = not_provided
+            return render(request, "home/recover_account.html",self.dict)
+
+        else:
+            
+            username = request.POST['username']
+            question_one = request.POST['question_one']
+            question_two = request.POST['question_two']
+
+            # need to get the ID associated with this username
+            user_query_res = User.objects.filter(username = username)[0]
+            user_id = user_query_res.id
+            
+            user_email = user_query_res.email
+            user_profile_query_res = models.UserProfile.objects.filter(user_id = user_id)[0]
+
+            if (question_one == user_profile_query_res.question_one) and (question_two == user_profile_query_res.question_two):
+                self.dict['success'] = True
+                self.dict['email'] = user_email
+                
+
+                return render(request, "home/recover_account.html",self.dict)
+
+
+        self.dict['form'] = recover_account_form
+        return render(request, "home/recover_account.html",self.dict)
+
+
+        
 
 class Index(BaseView):
 
@@ -199,9 +258,33 @@ class RecoveryQuestions(BaseView):
             
             return render(request, "home/recovery_questions.html",self.dict)
 
+        else:
+
+            self.dict['success'] = recovery_questions_form
+
+            user_list = models.UserProfile.objects.values_list('user_id', flat = True)
+
+            if request.user.id in user_list:
+                # in this case they are already in the UserProfile data base
+
+                # perform update to row of data
+                query_res = models.UserProfile.objects.filter(user = request.user)[0]
+                query_res.question_one = question_one
+                query_res.question_two = question_two
+
+                query_res.save()
+
+            else:
 
 
-        
+                user_profile = models.UserProfile.objects.create(user=request.user, question_one=question_one,
+                                                                                    question_two = question_two)
+
+                user_profile.save()
+
+            return render(request, "home/recovery_questions.html",self.dict)
+
+
 
         return render(request, "home/change_password.html",self.dict)
         
@@ -268,6 +351,9 @@ def log_in(request):
             user = authenticate(request, username=username, password=pw)
 
             if user is not None:
+
+                # actually logging the user in
+                login(request, user)
                 
                 request.session['user'] = username
                 request.session['logged_in'] = True
