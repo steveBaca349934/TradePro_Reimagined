@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
 from . import forms, models, utils
 # Create your views here.
 from django.views import View
@@ -10,6 +11,7 @@ from django.views import View
 login_form = forms.LoginForm()
 account_creation_form = forms.AccountCreationForm()
 change_pdub = forms.ChangePDub()
+recovery_questions_form = forms.RecoveryQuestions()
 
 class BaseView(View):
 
@@ -87,42 +89,115 @@ class RAT(BaseView):
         pass
 
 class ChangePassword(BaseView):
+    """
+    This is under the requirement that the user
+    knows their current password
+    """
 
     def get(self, request):
 
-        super(ChangePassword, self).get(request)
-        self.dict['new_pw_form'] = change_pdub
+        if (request.session.get('logged_in') == False) or request.session.get('logged_in') is None:
 
-        return render(request, "home/change_password.html",self.dict)
+            return HttpResponseRedirect(reverse('log_in'))
+
+        else:
+
+            super(ChangePassword, self).get(request)
+            self.dict['new_pw_form'] = change_pdub
+
+            return render(request, "home/change_password.html",self.dict)
 
     def post(self, request):
 
+        #the user must be logged in before they can use this functionality
         super(ChangePassword, self).post(request)
         self.dict['new_pw_form'] = change_pdub
 
+        old_password = request.POST['old_password']
+        new_password = request.POST['new_password']
 
-        email = request.POST['email']
-
-        # first need to check if the email was even submitted
-        if len(email) == 0:
-            self.dict['no_email'] = True
+        # first need to check if the passwords were even submitted
+        if len(old_password) == 0:
+            self.dict['no_old_password'] = True
 
             return render(request, "home/change_password.html",self.dict)
 
-        # second need to check if the email is legitimate or not
-        email_list = User.objects.values_list('email', flat = True)
+        if len(new_password) == 0:
 
-        if email not in email_list:
-
-            self.dict['email_doesnt_exist'] = True
-            self.dict['attempted_email'] = email
+            self.dict['no_new_password'] = True
 
             return render(request, "home/change_password.html",self.dict)
 
 
-        
+        # check to see if old password is legit or not
+        user = authenticate(request, username=request.session.get("user"), password=old_password)
+
+        if user is None:
+            self.dict["wrong_pw"] = True
+
+            return render(request, "home/change_password.html",self.dict)
 
 
+        else:
+
+            if utils.check_pw_is_robust(new_password):
+                #the password is robust enough
+
+                query_res = User.objects.filter(username = request.session.get("user"))[0]
+
+                query_res.password = make_password(new_password)
+                query_res.save()
+
+                return HttpResponseRedirect(reverse('index'))
+
+            else:
+
+                self.dict["weak_pw"] = True
+
+                return render(request, "home/change_password.html",self.dict)
+
+
+class RecoveryQuestions(BaseView):
+
+
+    def get(self, request):
+
+        # They need to be logged in for this
+        if (request.session.get('logged_in') == False) or request.session.get('logged_in') is None:
+
+            return HttpResponseRedirect(reverse('log_in'))
+
+        super(RecoveryQuestions,self).get(request)
+
+        self.dict['questions_form'] = recovery_questions_form
+
+        return render(request, "home/recovery_questions.html",self.dict)
+
+    def post(self,request):
+
+        super(RecoveryQuestions,self).post(request)
+
+        question_one = request.POST['question_one']
+        question_two = request.POST['question_two']
+
+        #first need to dynamically check and ensure everything was correctly entered
+        not_provided = []
+
+        for elem in request.POST:
+
+            if len(request.POST[elem]) == 0:
+
+                not_provided.append(elem.capitalize())
+
+        # in this case, some element was not correctly provided during
+        # the users attempt to give recovery questions
+        if len(not_provided) > 0:
+
+            self.dict['questions_form'] = recovery_questions_form
+            self.dict['not_provided'] = not_provided
+
+            
+            return render(request, "home/recovery_questions.html",self.dict)
 
 
 

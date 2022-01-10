@@ -30,3 +30,8 @@ def check_pw_is_robust(pw:str)->bool:
 
 
     return True
+
+
+def send_email():
+    pass
+

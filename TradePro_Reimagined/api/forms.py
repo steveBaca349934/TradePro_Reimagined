@@ -32,8 +32,24 @@ class AccountCreationForm(forms.Form):
 
 
 class ChangePDub(forms.Form):
-    
-    email = forms.CharField(label="Email",required= False,
+
+    old_password = forms.CharField(label="Old Password",required= False,
     widget= forms.TextInput
-    (attrs={'placeholder':'Email'}))
+    (attrs={'placeholder':'Old Password'}))
+
+    new_password = forms.CharField(label="New Password",required= False,
+    widget= forms.TextInput
+    (attrs={'placeholder':'New Password'}))
+
+
+class RecoveryQuestions(forms.Form):
+
+    question_one = forms.CharField(label="Question One, what was your first grade teacher\'s name ? ",required= False,
+    widget= forms.TextInput
+    (attrs={'placeholder':'Question One'}))
+
+    question_two = forms.CharField(label="Question Two, what was/is your favorite pet\'s name ? ",required= False,
+    widget= forms.TextInput
+    (attrs={'placeholder':'Question Two'}))
+
 

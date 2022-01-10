@@ -1,0 +1,23 @@
+{% extends "home/index.html" %}
+
+{% block body %}
+
+<h1>Please Set Your Recovery Questions</h1>
+
+<form action="{% url 'recovery_questions' %}" method="post">
+    {% csrf_token %}
+    {{questions_form}}
+    <input type="submit">
+
+</form>
+
+{% for elem in not_provided %}
+<h2>
+    Please Answer {{elem}}
+</h2>
+{% endfor %}
+
+
+
+
+{% endblock %}
