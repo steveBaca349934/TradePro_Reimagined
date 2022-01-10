@@ -29,3 +29,11 @@ class AccountCreationForm(forms.Form):
     last_name = forms.CharField(label="Last_Name",required= False,
     widget= forms.TextInput
     (attrs={'placeholder':'Last_Name'}))
+
+
+class ChangePDub(forms.Form):
+    
+    email = forms.CharField(label="Email",required= False,
+    widget= forms.TextInput
+    (attrs={'placeholder':'Email'}))
+

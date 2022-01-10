@@ -9,11 +9,15 @@ from django.views import View
 
 login_form = forms.LoginForm()
 account_creation_form = forms.AccountCreationForm()
+change_pdub = forms.ChangePDub()
 
 class BaseView(View):
 
     # If you want every class based view to have access to some 
     # piece of session data, change it here and then change layout.html
+    def __init__(self):
+
+        self.dict = None
 
     def _setup_view(self,request):
 
@@ -22,7 +26,6 @@ class BaseView(View):
             "user":request.session.get("user")
         }
 
-    
     def get(self, request):
         self._setup_view(request)
         
@@ -38,7 +41,8 @@ class BaseView(View):
 class Index(BaseView):
 
     def get(self, request):
-        self._setup_view(request)
+        #self._setup_view(request)
+        super(Index, self).get(request)
 
         return render(request, "home/index.html",self.dict)
 
@@ -49,7 +53,9 @@ class Index(BaseView):
 class CustomerService(BaseView):
 
     def get(self, request):
-        self._setup_view(request)
+
+        super(CustomerService, self).get(request)
+
 
         return render(request, "home/customer_service.html",self.dict)
 
@@ -60,7 +66,8 @@ class Profile(BaseView):
 
     def get(self, request):
 
-        self._setup_view(request)
+        super(Profile, self).get(request)
+
 
         return render(request, "home/profile.html",self.dict)
 
@@ -71,12 +78,59 @@ class RAT(BaseView):
 
     def get(self, request):
 
-        self._setup_view(request)
+        super(RAT, self).get(request)
+
 
         return render(request, "home/rat.html",self.dict)
 
     def post(self, request):
         pass
+
+class ChangePassword(BaseView):
+
+    def get(self, request):
+
+        super(ChangePassword, self).get(request)
+        self.dict['new_pw_form'] = change_pdub
+
+        return render(request, "home/change_password.html",self.dict)
+
+    def post(self, request):
+
+        super(ChangePassword, self).post(request)
+        self.dict['new_pw_form'] = change_pdub
+
+
+        email = request.POST['email']
+
+        # first need to check if the email was even submitted
+        if len(email) == 0:
+            self.dict['no_email'] = True
+
+            return render(request, "home/change_password.html",self.dict)
+
+        # second need to check if the email is legitimate or not
+        email_list = User.objects.values_list('email', flat = True)
+
+        if email not in email_list:
+
+            self.dict['email_doesnt_exist'] = True
+            self.dict['attempted_email'] = email
+
+            return render(request, "home/change_password.html",self.dict)
+
+
+        
+
+
+
+
+
+        
+
+        return render(request, "home/change_password.html",self.dict)
+        
+
 
 def log_out(request):
     """
