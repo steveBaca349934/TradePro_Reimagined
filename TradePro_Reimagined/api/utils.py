@@ -1,6 +1,7 @@
 from django.shortcuts import render
 import re
-import yahoofinance
+from yahoofinance import HistoricalPrices
+import yfinance as yf
 
 
 def check_pw_is_robust(pw:str)->bool:
@@ -38,7 +39,28 @@ def send_email():
 
 
 
-def scrape_web_data():
+def scrape_web_data()->dict:
 
-    pass
+    # req = HistoricalPrices('AAPL', start_date = '2022-01-15', end_date = '2022-01-30')
+    standard_poor_500 = yf.Ticker("^GSPC")
+    standard_poor_500_prev_close = standard_poor_500.info.get('previousClose')
+
+    ndaq = yf.Ticker("^IXIC")
+    ndaq_prev_close = ndaq.info.get('previousClose')
+
+    djia = yf.Ticker("^DJI")
+    djia_prev_close = djia.info.get('previousClose')
+
+
+    return {
+        'S&P500': standard_poor_500_prev_close,
+        'NASDAQ': ndaq_prev_close,
+        'DJIA': djia_prev_close
+    }
+
+
+if __name__ == '__main__':
+    req = scrape_web_data()
+    print(req)
+    
 

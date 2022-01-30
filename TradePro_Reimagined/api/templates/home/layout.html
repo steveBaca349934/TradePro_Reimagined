@@ -7,13 +7,26 @@
         <title>TradePro Reimagined</title>
         <link href="{% static 'home/css/styles.css' %}" rel="stylesheet">
     </head>
-    <ul>
-        <li>
-            <a href="{% url 'index' %}">
-                Home
-            </a>
-        </li>
-    </ul>
+    <a href="{% url 'index' %}">
+        Home
+    </a>
+    <div id="head_div">
+
+        
+        <ul>
+            <!-- <li id="home_header_link">
+                <a href="{% url 'index' %}">
+                    Home
+                </a>
+            </li> -->
+            {% for key, value in finance_data.items %}
+
+            <li class="header_link"> {{ key }} Previous Day Close: {{ value }}
+            </li>
+
+            {% endfor %}
+        </ul>
+    </div>
 
 
     <div>
@@ -36,13 +49,14 @@
 
 
 
+
     <body id="main_body">
 
 
         {% block body %}
         {% endblock %}
 
-        
+
     </body>
 
 </html>

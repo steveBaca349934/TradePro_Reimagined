@@ -14,6 +14,8 @@ change_pdub = forms.ChangePDub()
 recovery_questions_form = forms.RecoveryQuestions()
 recover_account_form = forms.RecoverAccountForm()
 
+financials = None
+
 class BaseView(View):
 
     # If you want every class based view to have access to some 
@@ -23,11 +25,26 @@ class BaseView(View):
         self.dict = None
 
     def _setup_view(self,request):
-
+        
         self.dict = {
             "logged_in": request.session.get('logged_in'),
             "user":request.session.get("user")
         }
+        global financials
+
+        if financials is None:
+
+            try:
+                financials = utils.scrape_web_data()
+
+            except Exception as e:
+                financials = None
+                print(e)
+    
+        self.dict['finance_data'] = financials
+
+        
+            
 
     def get(self, request):
         self._setup_view(request)
@@ -103,7 +120,10 @@ class Index(BaseView):
 
     def get(self, request):
         #self._setup_view(request)
+
+
         super(Index, self).get(request)
+
 
         return render(request, "home/index.html",self.dict)
 
