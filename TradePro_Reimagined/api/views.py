@@ -89,7 +89,7 @@ class RecoverAccount(BaseView):
                 self.dict['success'] = True
                 self.dict['email'] = user_email
                 
-
+                #TODO actually send a recovery email
                 return render(request, "home/recover_account.html",self.dict)
 
 

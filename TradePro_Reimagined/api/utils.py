@@ -1,5 +1,6 @@
 from django.shortcuts import render
 import re
+import yahoofinance
 
 
 def check_pw_is_robust(pw:str)->bool:
@@ -33,5 +34,11 @@ def check_pw_is_robust(pw:str)->bool:
 
 
 def send_email():
+    pass
+
+
+
+def scrape_web_data():
+
     pass
 
