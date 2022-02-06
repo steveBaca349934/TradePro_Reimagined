@@ -1,6 +1,5 @@
 from django.shortcuts import render
 import re
-from yahoofinance import HistoricalPrices
 import yfinance as yf
 
 
@@ -53,9 +52,9 @@ def scrape_web_data()->dict:
 
 
     return {
-        'S&P500': standard_poor_500_prev_close,
-        'NASDAQ': ndaq_prev_close,
-        'DJIA': djia_prev_close
+        'S&P500': round(standard_poor_500_prev_close,1),
+        'NASDAQ': round(ndaq_prev_close,1),
+        'DJIA': round(djia_prev_close,1)
     }
 
 

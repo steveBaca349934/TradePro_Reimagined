@@ -5,6 +5,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from . import forms, models, utils
+from django.db.models import Max
+from datetime import datetime
 # Create your views here.
 from django.views import View
 
@@ -14,7 +16,7 @@ change_pdub = forms.ChangePDub()
 recovery_questions_form = forms.RecoveryQuestions()
 recover_account_form = forms.RecoverAccountForm()
 
-financials = None
+
 
 class BaseView(View):
 
@@ -30,20 +32,35 @@ class BaseView(View):
             "logged_in": request.session.get('logged_in'),
             "user":request.session.get("user")
         }
-        global financials
-
-        if financials is None:
-
-            try:
-                financials = utils.scrape_web_data()
-
-            except Exception as e:
-                financials = None
-                print(e)
-    
-        self.dict['finance_data'] = financials
-
         
+        # need to check most recent date in Financials Model
+        # if most recent date is not today, then we need to 
+        # update the financials data...
+        max_financial_date = models.Financials.objects.aggregate(Max('date'))
+        max_date = max_financial_date.get('date__max')
+        print(f"\n \n the most recent financial date is: {max_date} \n \n")
+        if (max_date is None) or (max_date.day < datetime.now().day):
+
+            # refresh financials
+            financials = utils.scrape_web_data()
+
+            self.dict['finance_data'] = financials
+
+            update_financials = models.Financials.objects.create(s_and_p_500=financials.get('S&P500'),
+                                                         nasdaq=financials.get('NASDAQ'), djia = financials.get('DJIA'))
+
+            update_financials.save()
+
+        else:
+            
+            data = models.Financials.objects.filter(date = max_date)[0]
+            financials = {'S&P500': data.s_and_p_500,
+                          'NASDAQ': data.nasdaq,
+                          'DJIA': data.djia}
+
+            
+            self.dict['finance_data'] = financials
+
             
 
     def get(self, request):

@@ -7,5 +7,12 @@ class UserProfile(models.Model):
     question_two = models.CharField(max_length = 20)
 
 
+class Financials(models.Model):
+    date =  models.DateTimeField(auto_now = True)
+    s_and_p_500 = models.FloatField()
+    nasdaq = models.FloatField()
+    djia = models.FloatField()
+
+
     
 
