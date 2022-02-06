@@ -6,6 +6,9 @@ class UserProfile(models.Model):
     question_one = models.CharField(max_length = 20)
     question_two = models.CharField(max_length = 20)
 
+class RiskAssessmentScore(models.Model):
+    user = models.OneToOneField(User, on_delete = models.CASCADE)
+    score = models.FloatField()
 
 class Financials(models.Model):
     date =  models.DateTimeField(auto_now = True)

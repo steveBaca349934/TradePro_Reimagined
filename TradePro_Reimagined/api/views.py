@@ -15,6 +15,7 @@ account_creation_form = forms.AccountCreationForm()
 change_pdub = forms.ChangePDub()
 recovery_questions_form = forms.RecoveryQuestions()
 recover_account_form = forms.RecoverAccountForm()
+rat_form = forms.RiskAssessmentTest()
 
 
 
@@ -38,7 +39,6 @@ class BaseView(View):
         # update the financials data...
         max_financial_date = models.Financials.objects.aggregate(Max('date'))
         max_date = max_financial_date.get('date__max')
-        print(f"\n \n the most recent financial date is: {max_date} \n \n")
         if (max_date is None) or (max_date.day < datetime.now().day):
 
             # refresh financials
@@ -81,7 +81,7 @@ class RecoverAccount(BaseView):
         super(RecoverAccount, self).get(request)
 
         # if they're logged in, redirect to profile page
-        if request.session.get('logged_in'):
+        if not request.user.is_anonymous:
 
             return HttpResponseRedirect(reverse('profile'))
 
@@ -138,9 +138,7 @@ class Index(BaseView):
     def get(self, request):
         #self._setup_view(request)
 
-
         super(Index, self).get(request)
-
 
         return render(request, "home/index.html",self.dict)
 
@@ -151,6 +149,9 @@ class Index(BaseView):
 class CustomerService(BaseView):
 
     def get(self, request):
+
+        if request.user.is_anonymous:
+            return HttpResponseRedirect(reverse('log_in'))
 
         super(CustomerService, self).get(request)
 
@@ -166,7 +167,6 @@ class Profile(BaseView):
 
         super(Profile, self).get(request)
 
-
         return render(request, "home/profile.html",self.dict)
 
     def post(self, request):
@@ -175,14 +175,41 @@ class Profile(BaseView):
 class RAT(BaseView):
 
     def get(self, request):
+        
+        if request.user.is_anonymous:
+            return HttpResponseRedirect(reverse('log_in'))
 
         super(RAT, self).get(request)
 
+        query_risk_assessment_score = models.RiskAssessmentScore.objects.filter(user=request.user)[0]
+
+        if query_risk_assessment_score is not None:
+
+            self.dict['avg_of_scores'] = query_risk_assessment_score.score
+            return render(request, "home/rat.html",self.dict)
+
+        else:
+
+            self.dict['rat_form'] = rat_form
+
+            return render(request, "home/rat.html",self.dict)
+
+    
+    def post(self, request):
+        super(RAT, self).get(request)
+
+        scores = [int(request.POST[question]) for question in request.POST if 'question' in question.lower()]
+        avg_of_scores = sum(scores)/len(scores)
+        
+
+        self.dict['avg_of_scores'] = avg_of_scores
+
+        rat_score = models.RiskAssessmentScore.objects.create(user=request.user,
+                                                         score = avg_of_scores)
+
+        rat_score.save()
 
         return render(request, "home/rat.html",self.dict)
-
-    def post(self, request):
-        pass
 
 class ChangePassword(BaseView):
     """
@@ -192,7 +219,7 @@ class ChangePassword(BaseView):
 
     def get(self, request):
 
-        if (request.session.get('logged_in') == False) or request.session.get('logged_in') is None:
+        if request.user.is_anonymous:
 
             return HttpResponseRedirect(reverse('log_in'))
 
@@ -259,7 +286,7 @@ class RecoveryQuestions(BaseView):
     def get(self, request):
 
         # They need to be logged in for this
-        if (request.session.get('logged_in') == False) or request.session.get('logged_in') is None:
+        if request.user.is_anonymous:
 
             return HttpResponseRedirect(reverse('log_in'))
 
@@ -338,8 +365,7 @@ def log_out(request):
     """
     # built in django command to clear session
     logout(request)
-
-
+    
     # redirect to the home page
     return HttpResponseRedirect(reverse('index'))
 
@@ -352,7 +378,7 @@ def log_in(request):
     """
 
     # First check to see if a user is logged in 
-    if request.session.get('logged_in'):
+    if not request.user.is_anonymous:
 
         return HttpResponseRedirect(reverse('index'))
 
@@ -442,11 +468,9 @@ def open_an_account(request):
     """
 
     # if the user is already logged in, just redirect to home page
-    if request.session.get('logged_in') == True:
+    if not request.user.is_anonymous:
 
         return HttpResponseRedirect(reverse('index'))
-
-
 
     elif request.method == 'POST':
 
