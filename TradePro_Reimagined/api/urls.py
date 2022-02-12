@@ -9,6 +9,7 @@ urlpatterns = [
         path("open_an_account", views.open_an_account, name="open_an_account"),
         path("profile", views.Profile.as_view(), name="profile"),
         path("risk_assessment_test", views.RAT.as_view(), name="risk_assessment_test"),
+        path("risk_assessment_test/<int:reset>", views.RAT.as_view(), name="risk_assessment_test"),
         path("change_password", views.ChangePassword.as_view(), name="change_password"),
         path("recovery_questions", views.RecoveryQuestions.as_view(), name="recovery_questions"),
         path("recover_account", views.RecoverAccount.as_view(), name="recover_account")

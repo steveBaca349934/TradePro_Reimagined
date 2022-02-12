@@ -174,18 +174,27 @@ class Profile(BaseView):
 
 class RAT(BaseView):
 
-    def get(self, request):
-        
+    def get(self, request, **kwargs):
+
         if request.user.is_anonymous:
             return HttpResponseRedirect(reverse('log_in'))
 
         super(RAT, self).get(request)
 
-        query_risk_assessment_score = models.RiskAssessmentScore.objects.filter(user=request.user)[0]
+        reset = kwargs.get('reset')
 
-        if query_risk_assessment_score is not None:
+        if reset == 1:
+            models.RiskAssessmentScore.objects.filter(user=request.user).delete()
 
-            self.dict['avg_of_scores'] = query_risk_assessment_score.score
+
+        query_risk_assessment_score = models.RiskAssessmentScore.objects.filter(user=request.user)
+
+        
+        if len(query_risk_assessment_score) > 0:
+
+            self.dict['avg_of_scores'] = query_risk_assessment_score[0].score
+
+
             return render(request, "home/rat.html",self.dict)
 
         else:
