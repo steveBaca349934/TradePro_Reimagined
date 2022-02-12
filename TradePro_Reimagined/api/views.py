@@ -146,19 +146,33 @@ class Index(BaseView):
         pass
     
 
-class CustomerService(BaseView):
+class Portfolio(BaseView):
 
     def get(self, request):
 
         if request.user.is_anonymous:
             return HttpResponseRedirect(reverse('log_in'))
 
-        super(CustomerService, self).get(request)
+        super(Portfolio, self).get(request)
+
+        query_risk_assessment_score = models.RiskAssessmentScore.objects.filter(user=request.user)
+
+        if len(query_risk_assessment_score) > 0:
+
+            self.dict['avg_of_scores'] = query_risk_assessment_score[0].score
+
+            investment_vehicles_and_alloc = utils.retrieve_optimal_portfolio(self.dict['avg_of_scores'])
 
 
-        return render(request, "home/customer_service.html",self.dict)
+            return render(request, "home/portfolio.html",self.dict)
+
+
+        else:
+
+            return HttpResponseRedirect(reverse('risk_assessment_test'))
 
     def post(self, request):
+
         pass
 
 class Profile(BaseView):

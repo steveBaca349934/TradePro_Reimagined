@@ -58,6 +58,17 @@ def scrape_web_data()->dict:
     }
 
 
+def retrieve_optimal_portfolio(rat:int)->dict:
+    """
+    Given a risk assessment score, which is a measurement
+    of a client's risk tolerance
+
+    return a dictionary of investment vehicle with percentages that their 
+    portfolio should allocate to each investment vehicle 
+    """
+    pass
+
+
 if __name__ == '__main__':
     req = scrape_web_data()
     print(req)
