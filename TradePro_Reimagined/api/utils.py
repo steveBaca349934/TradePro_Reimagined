@@ -4,6 +4,7 @@ import yfinance as yf
 import pandas as pd
 from datetime import datetime, date
 import sys
+import copy
 from pypfopt.efficient_frontier import EfficientFrontier
 from pypfopt import  risk_models
 from pypfopt import expected_returns
@@ -64,7 +65,7 @@ def scrape_web_data()->dict:
 
 def scrape_stock_tickers()->list:
     """
-    Uses pandas to get list of all stock tickers
+    Uses pandas to get list of all stock tickers from S&P 500
 
     returns list of stock tickers
     """
@@ -105,7 +106,7 @@ def get_ticker_data(tickers:list)->pd.DataFrame:
 
 
 
-def retrieve_optimal_portfolio(ticker_df:pd.DataFrame, rat:int = None)->dict:
+def retrieve_optimal_portfolio(ticker_df:pd.DataFrame, rat:int)->dict:
     """
     Given a risk assessment score, which is a measurement
     of a client's risk tolerance
@@ -117,17 +118,38 @@ def retrieve_optimal_portfolio(ticker_df:pd.DataFrame, rat:int = None)->dict:
 
     sample_covar_mat = risk_models.sample_cov(ticker_df)
 
-    ef = EfficientFrontier(mean,sample_covar_mat)
+    ef = EfficientFrontier(mean,sample_covar_mat, weight_bounds=(0, 1))
 
-    print(f"the vars of ef are {vars(ef)}")
+    # the RAT score will be used to calculate 
+    # the client's intended returns 
+    # the higher the RAT, the higher the 
+    # expected returns
+    
+    ef._max_return_value = copy.deepcopy(ef)._max_return()
 
-    pass
+    these_expected_returns = 0
+    if rat * .1 > ef._max_return_value:
+        these_expected_returns = ef._max_return_value
+
+    elif rat * .1 < 0:
+        #we need at least 5% returns to adjust for inflation
+        these_expected_returns = .05
+
+    else:
+        these_expected_returns = rat * .1
 
 
+    res = ef.efficient_return(these_expected_returns)
+    final_res = dict(res)
 
+    for ticker, alloc in final_res.items():
+        if alloc == 0.0:
+            del final_res[ticker]
+
+    return final_res
 
 
 if __name__ == '__main__':
     tickers = scrape_stock_tickers()
     ticker_df = get_ticker_data(tickers)
-    retrieve_optimal_portfolio(ticker_df)
+    print(retrieve_optimal_portfolio(ticker_df, 3))

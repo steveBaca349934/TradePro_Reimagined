@@ -159,11 +159,17 @@ class Portfolio(BaseView):
 
         if len(query_risk_assessment_score) > 0:
 
+            # This is the RAT score
             self.dict['avg_of_scores'] = query_risk_assessment_score[0].score
 
-            investment_vehicles_and_alloc = utils.retrieve_optimal_portfolio(self.dict['avg_of_scores'])
+            # get stock market data and build an optimal portfolio
+            # based off of the RAT score
+            s_and_p_tickers = utils.scrape_stock_tickers()
+            data = utils.get_ticker_data(s_and_p_tickers)
 
-
+            investment_vehicles_and_alloc = utils.retrieve_optimal_portfolio(data,self.dict['avg_of_scores'])
+            self.dict['investment_vehicles_and_alloc'] = investment_vehicles_and_alloc
+         
             return render(request, "home/portfolio.html",self.dict)
 
 
