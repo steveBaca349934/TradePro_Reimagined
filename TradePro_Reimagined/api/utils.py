@@ -142,9 +142,16 @@ def retrieve_optimal_portfolio(ticker_df:pd.DataFrame, rat:int)->dict:
     res = ef.efficient_return(these_expected_returns)
     final_res = dict(res)
 
+    to_del = []
     for ticker, alloc in final_res.items():
         if alloc == 0.0:
-            del final_res[ticker]
+            to_del.append(ticker)
+
+    for tick in to_del:
+        try:
+            del final_res[tick]
+        except KeyError:
+            pass
 
     return final_res
 
