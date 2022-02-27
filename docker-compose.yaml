@@ -1,26 +1,30 @@
 version: "3.9"
 services:
-  TradePro_Reimagined:
-    depends_on:
-      - postgres_db
-    build:
-      context: ./TradePro_Reimagined
-      dockerfile: Dockerfile
-    image: tradepro_reimagined:v1
-    environment:
-        - PORT=8020
-    env_file:
-        - TradePro_Reimagined/.env
-    ports:
-        - "8001:8020"
-    command:
-        sh -c "chmod +x /app/migrate.sh && sh /app/migrate.sh && /app/entrypoint.sh"
+  # TradePro_Reimagined:
+  #   depends_on:
+  #     - postgres_db
+  #   build:
+  #     context: ./TradePro_Reimagined
+  #     dockerfile: Dockerfile
+  #   image: tradepro_reimagined:v1
+  #   environment:
+  #       - PORT=8020
+  #   env_file:
+  #       - TradePro_Reimagined/.env
+  #   ports:
+  #       - "8001:8020"
+  #   command:
+  #       sh -c "chmod +x /app/migrate.sh && sh /app/migrate.sh && /app/entrypoint.sh"
   postgres_db:
     image: postgres
+    restart: always
+    command: -p 5434
     env_file:
       - TradePro_Reimagined/.env
     expose:
-      - 5432
+      - 5434
+    ports:
+      - "5434:5434"      
     volumes:
       - postgres_data:/var/lib/postgresql/data/
       

@@ -98,7 +98,6 @@ DB_HOST,
 DB_PORT
 ])
 
-POSTGRES_READY=str(os.environ.get('POSTGRES_READY')) == '1'
 
 if DB_IS_AVAIL:
     DATABASES = {
