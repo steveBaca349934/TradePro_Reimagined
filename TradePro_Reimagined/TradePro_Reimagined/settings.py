@@ -89,6 +89,7 @@ DB_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
 DB_DATABASE = os.environ.get("POSTGRES_DB")
 DB_HOST = os.environ.get("POSTGRES_HOST")
 DB_PORT = os.environ.get("POSTGRES_PORT")
+DB_IGNORE_SSL = os.environ.get("DB_IGNORE_SSL") == "true"
 
 DB_IS_AVAIL = all([
 DB_USERNAME,
@@ -110,6 +111,13 @@ if DB_IS_AVAIL:
             "PORT": DB_PORT,
         }
     }
+
+if not DB_IGNORE_SSL:
+    DATABASES["default"]["OPTIONS"] = {
+        'sslmode':'required'
+    }
+
+
 
 
 
