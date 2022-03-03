@@ -35,5 +35,7 @@ kubectl rollout status deployment/tradepro-reimagined-web-deployment
 
 7. Migrate Database
 '''
+export SINGLE_POD_NAME=$(kubectl get pod -l app=django-k8s-web-deployment -o jsonpath="{.items[0].metadata.name}")
 
+kubectl exec -it $SINGLE_POD_NAME -- bash /app/migrate.sh
 '''
