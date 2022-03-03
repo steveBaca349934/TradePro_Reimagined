@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: "./TradePro_Reimagined"
+        working-directory: "./TradePro_Reimagined/TradePro_Reimagined"
     strategy:
       max-parallel: 4
       matrix:
