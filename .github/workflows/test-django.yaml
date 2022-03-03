@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: "./TradePro_Reimagined/"
+        working-directory: "./TradePro_Reimagined"
     strategy:
       max-parallel: 4
       matrix:
@@ -33,4 +33,4 @@ jobs:
         pip install -r requirements.txt
     - name: Run Tests
       run: |
-        python manage.py test
+        python3 manage.py test
