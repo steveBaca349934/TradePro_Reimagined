@@ -28,7 +28,7 @@ DEBUG = str(os.environ.get('DEBUG')) == '1'
 
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOST')]
 
 
 # Application definition
@@ -101,6 +101,7 @@ DB_PORT
 
 
 if DB_IS_AVAIL:
+
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
@@ -112,10 +113,10 @@ if DB_IS_AVAIL:
         }
     }
 
-if not DB_IGNORE_SSL:
-    DATABASES["default"]["OPTIONS"] = {
-        'sslmode':'required'
-    }
+    if not DB_IGNORE_SSL:
+        DATABASES["default"]["OPTIONS"] = {
+            'sslmode':'require'
+        }
 
 
 
