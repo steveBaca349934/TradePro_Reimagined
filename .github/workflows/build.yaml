@@ -1,0 +1,24 @@
+name: Build Docker Container & Push to DO Registry
+
+on:
+  workflow_call:
+  workflow_dispatch:
+  
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test_django:
+    uses: steveBaca349934/TradePro_Reimagined/.github/workflows/test-django.yaml@master
+  docker_build:
+
+    runs-on: ubuntu-latest
+
+    env:
+      DJANGO_SECRET_KEY: test-key-not-good
+
+
+    steps:
+    - uses: actions/checkout@v2
