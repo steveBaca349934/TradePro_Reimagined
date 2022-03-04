@@ -67,8 +67,7 @@ jobs:
 
     - name: Update Deployment Image
       run: |
-        kubectl set image deployment/tradepro-reimagined-web-deployment tradepro-reimagined-web=registry.digitalocean.com/ \
-        tradepro-reimagined-k8s/tradepro-reimagined-web:${GITHUB_SHA::7}
+        kubectl set image deployment/tradepro-reimagined-web-deployment tradepro-reimagined-web=registry.digitalocean.com/tradepro-reimagined-k8s/tradepro-reimagined-web:${GITHUB_SHA::7}
     - name: Wait for rollout to finish
       run: |
         kubectl rollout status deployment/tradepro-reimagined-web-deployment
