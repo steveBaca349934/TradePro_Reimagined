@@ -19,6 +19,7 @@ jobs:
 
     env:
       DJANGO_SECRET_KEY: test-key-not-good
+      CLUSTER_NAME: tradepro-reimagined
 
     steps:
     - name: Checkout code
@@ -39,6 +40,21 @@ jobs:
     - name: Push image
       run: |
         docker push registry.digitalocean.com/tradepro-reimagined-k8s/tradepro-reimagined-web --all-tags
+    - name: K8s cluster kubeconfig file with/ short-lived creds
+      run: |
+        doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ env.CLUSTER_NAME }}
+    - name: Update Deployment Image
+      run: |
+        kubectl set image deployment/tradepro-reimagined-web-deployment tradepro-reimagined-web=registry.digitalocean.com/
+        tradepro-reimagined-k8s/tradepro-reimagined-web:${GITHUB_SHA::7}
+    - name: Wait for rollout to finish
+      run: |
+        kubectl rollout status deployment/tradepro-reimagined-web-deployment
+    - name: Migrate database command
+      run: |
+        export SINGLE_POD_NAME=$(kubectl get pod -l app=django-k8s-web-deployment -o jsonpath="{.items[0].metadata.name}")
+        kubectl exec -it $SINGLE_POD_NAME -- bash /app/migrate.sh
+    
 
 
       
