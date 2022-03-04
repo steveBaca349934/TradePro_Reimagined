@@ -61,7 +61,7 @@ jobs:
 
         EOF
 
-        kubectl delete tradepro-reimagined-web-prod-env
+        kubectl delete secret tradepro-reimagined-web-prod-env
         kubectl create secret generic tradepro-reimagined-web-prod-env --from-env-file=TradePro_Reimagined/.env.prod
 
 
