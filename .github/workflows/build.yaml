@@ -10,11 +10,12 @@ on:
     branches: [ master ]
 
 jobs:
-  test_django:
+  test_django_job:
     uses: steveBaca349934/TradePro_Reimagined/.github/workflows/test-django.yaml@master
   docker_build:
 
     runs-on: ubuntu-latest
+    needs: [test_django_job]
 
     env:
       DJANGO_SECRET_KEY: test-key-not-good
