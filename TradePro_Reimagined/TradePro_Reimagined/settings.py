@@ -35,7 +35,8 @@ DEBUG = str(os.environ.get('DEBUG')) == '1'
 
 
 ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOST'),
-                '127.0.0.1' ]
+                '127.0.0.1',
+                'tradepro-reimagined.live' ]
 
 
 # Application definition
