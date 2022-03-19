@@ -1,0 +1,32 @@
+{% extends "home/layout.html" %}
+
+{% block body %}
+<h1>
+    Risk Assessment Test
+</h1>
+
+<form action="{% url 'risk_assessment_test' %}" method="post">
+    {% csrf_token %}
+    {{rat_form.as_p}}
+    <input type="submit">
+
+</form>
+
+{% if avg_of_scores is not None %}
+<h2>
+    Your Risk Assessment Score Is {{avg_of_scores}}
+</h2>
+<h3>
+    
+    <li class="header_link"><a href="{% url 'risk_assessment_test' reset=1 %}">If You Would Like To Take The RAT Again, Click Here</a></li> 
+
+</h3>
+
+
+{% endif %}
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,63 @@
+#head_div{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 40px;
+    
+
+}
+
+#outer_div{
+    background-color: black;
+}
+
+.header_link{
+
+    display:inline-block;
+    margin-right: 20px;
+
+}
+
+#main_body{
+    background-color: black;
+}
+
+.btn-primary{
+    background-color: #c0c0c0;
+    color: black;
+    border-color: white;
+}
+.btn-primary:hover{
+ background-color: grey;   
+}
+
+.bg-primary{
+    background-color: #c0c0c0 !important;
+    color: black;
+
+}
+
+.navbar-expand-lg{
+    background-color: #eceaea !important;
+}
+
+#navbarNav{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+}
+
+#TradePro_Reimagined{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    color: #eceaea !important;
+    margin-right: 35px;
+
+}
+
+/* #skyline{
+    display:flex;
+    align-items: center;
+    justify-content: center;} */
