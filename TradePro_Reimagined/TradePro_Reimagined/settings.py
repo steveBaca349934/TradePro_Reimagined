@@ -184,7 +184,14 @@ EMAIL_FILE_PATH = str(BASE_DIR.joinpath('sent_emails'))
 STATICFILES_DIRS = [
     BASE_DIR / "API/static",
     BASE_DIR / "API/templates"
+    # ,"/Users/stevebaca/PycharmProjects/TradePro_Reimagined/TradePro_Reimagined/API/static/home/css/styles.css"
 
 ]
 
+# ALERT ALERT ALERT 
+# NEED TO CHANGE THIS BACK WHEN YOU ARE DONE WITH LOCAL DEVELOPMENT AND WANT TO READ FROM THE CLOUD AGAIN
 from API.cdn.conf import * 
+# ALERT ALERT ALERT S
+
+# setting up https
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
