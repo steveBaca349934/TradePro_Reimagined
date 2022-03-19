@@ -12,7 +12,8 @@ urlpatterns = [
         path("risk_assessment_test/<int:reset>", views.RAT.as_view(), name="risk_assessment_test"),
         path("change_password", views.ChangePassword.as_view(), name="change_password"),
         path("recovery_questions", views.RecoveryQuestions.as_view(), name="recovery_questions"),
-        path("recover_account", views.RecoverAccount.as_view(), name="recover_account")
+        path("recover_account", views.RecoverAccount.as_view(), name="recover_account"),
+        path("social", views.Social.as_view(), name="social")
 
 
 

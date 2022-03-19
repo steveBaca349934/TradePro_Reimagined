@@ -192,6 +192,17 @@ class Profile(BaseView):
     def post(self, request):
         pass
 
+class Social(BaseView):
+
+    def get(self, request):
+
+        super(Social, self).get(request)
+
+        return render(request, "home/social.html",self.dict)
+
+    def post(self, request):
+        pass
+
 class RAT(BaseView):
 
     def get(self, request, **kwargs):
