@@ -2,9 +2,9 @@
 
 {% block body %}
 
-<h1>Log In</h1>
+<h1 class="header">Log In</h1>
 
-<form action="{% url 'log_in' %}" method="post">
+<form class="header" action="{% url 'log_in' %}" method="post">
     {% csrf_token %}
     {{login_form}}
     <input type="submit">
@@ -27,18 +27,7 @@
 
 </ul>
 
-<ul>
-    <li>
-        <a href="{% url 'open_an_account' %}">
-            Open An Account
-        </a>
-    </li>
-    <li>
-        <a href="{% url 'index' %}">
-            Home
-        </a>
-    </li>
-</ul>
+
 
 
 

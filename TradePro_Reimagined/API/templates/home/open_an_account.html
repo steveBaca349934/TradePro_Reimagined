@@ -1,17 +1,17 @@
 {% extends "home/layout.html" %}
 
 {% block body %}
-<h1>
+<h1 class="header">
     Open An Account
 </h1>
 
-<form action="{% url 'open_an_account' %}" method="post">
+<form class="header"action="{% url 'open_an_account' %}" method="post">
     {% csrf_token %}
     {{newacc_form}}
     <input type="submit">
 
 </form>
-<ul>
+<ul class="header">
     {% for elem in not_provided %}
     <li>{{ elem }} Was Not Provded</li>
     {% endfor %}

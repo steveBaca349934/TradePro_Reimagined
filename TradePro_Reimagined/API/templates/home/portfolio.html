@@ -1,10 +1,10 @@
 {% extends "home/layout.html" %}
 
 {% block body %}
-<h1>
+<h1 class="header">
     Portfolio
 </h1>
-<ul>
+<ul class="header">
 {% for ticker, percentage in investment_vehicles_and_alloc.items%}
 <li>For ticker {{ticker}}, allocate {{percentage}}</li>
 
