@@ -605,6 +605,9 @@ def open_an_account(request):
                 user = authenticate(request, username=username, password=pw)
 
                 if user is not None:
+
+                    # actually logging the user in
+                    login(request, user)
                 
                     request.session['user'] = username
                     request.session['logged_in'] = True
