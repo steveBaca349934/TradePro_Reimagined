@@ -63,7 +63,22 @@
 
 }
 
-/* #skyline{
-    display:flex;
-    align-items: center;
-    justify-content: center;} */
+#port_dscrete_alloc{
+    float: right;
+    width: 50%;
+}
+
+#port_alloc{
+
+    float: left;
+    width: 50%;
+
+}
+
+#skyline{
+    
+    max-width: 100%;
+    height: auto;
+    width: auto\9; /* ie8 */
+
+}
