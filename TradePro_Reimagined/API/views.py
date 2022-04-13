@@ -167,10 +167,17 @@ class Portfolio(BaseView):
             s_and_p_tickers = utils.scrape_stock_tickers()
             data = utils.get_ticker_data(s_and_p_tickers)
 
-            investment_vehicles_and_alloc = utils.retrieve_optimal_portfolio(data,self.dict['avg_of_scores'])
+            investment_vehicles_and_alloc:dict = utils.retrieve_optimal_portfolio(data, s_and_p_tickers ,self.dict['avg_of_scores'])
+
+            for company, allocations in investment_vehicles_and_alloc.items():
+                investment_vehicles_and_alloc[company] = round(allocations,3)
+
+
             self.dict['investment_vehicles_and_alloc'] = investment_vehicles_and_alloc
+            self.dict['discrete_investment_vehicles_and_alloc'] = utils.retrieve_optimal_portfolio_discrete_allocations(data, s_and_p_tickers, self.dict['avg_of_scores'])
          
             return render(request, "home/portfolio.html",self.dict)
+            
 
 
         else:
