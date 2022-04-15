@@ -7,7 +7,6 @@
     <head>
         <title>TradePro Reimagined</title>
 
-
         <!-- Required meta tags -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -28,7 +27,7 @@
 
 
 
-    <div class="dropdown">
+    <div class="dropdown" id="profile-button">
         {% if logged_in == True %}
         <!-- Beginning of Profile Button -->
         <button class="btn btn-secondary dropdown-toggle" type="button"
@@ -56,50 +55,51 @@
 
         <!-- End of Profile Button -->
 
-
-
-
-    </div>
-
-    <div id="head_div">
+    <div id="head_div" >
 
 
         <ul>
 
             {% for key, value in finance_data.items %}
-
-            <li class="header_link"> <h5><span class="badge rounded-pill
-                        bg-primary">{{ key }} $ {{ value }}</span></h5>
+            
+            <li class="header_link_stock_ticks"> <h5><span id="stock_ticks" class="badge
+                        rounded-pill
+                        bg-primary col">{{ key }} $ {{ value }}</span></h5>
             </li>
-
+                        
             {% endfor %}
         </ul>
     </div>
 
 
     <div id="TradePro_Reimagined">
-        <h1>
+        <h1 id="tradepro-text">
             TradePro_Reimagined.live
         </h1>
     </div>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
+    <!-- <div class="column"> -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
 
-
-            <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button> -->
             <div class="collapse navbar-collapse" id="navbarNav">
-                <li class="header_link"><a class="btn btn-primary" href="{% url 'index' %}" role="button">Home</a></li>
-                <li class="header_link"><a class="btn btn-primary" href="{% url 'portfolio' %}" role="button">Portfolio</a></li>
-                <li class="header_link"><a class="btn btn-primary" href="{% url 'risk_assessment_test' %}" role="button">Risk Assessment
-                        Test</a></li>
-                <li class="header_link"><a class="btn btn-primary" href="{% url 'social' %}" role="button">Social</a></li>
-            </div>
-        </div>
-    </nav>
+                
 
+                <li class="header_link"><a  class="btn btn-primary" href="{% url 'index' %}" role="button">Home</a></li>
+                
+                
+                <li class="header_link"><a class="btn btn-primary" href="{% url 'portfolio' %}" role="button">Portfolio</a></li>
+                
+                
+                <li class="header_link"><a class="btn btn-primary" href="{% url 'risk_assessment_test' %}" role="button">Risk Assessment Test</a></li>
+                
+                
+                <li class="header_link"><a class="btn btn-primary" href="{% url 'social' %}" role="button">Social</a></li>
+                
+
+            </div>
+
+        </nav>
+    
 
 
     <body id="main_body">
