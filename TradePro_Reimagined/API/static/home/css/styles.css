@@ -1,55 +1,96 @@
-#head_div{
-    display:flex;
+#head_div {
+    display: flex;
     align-items: center;
     justify-content: center;
     margin-right: 40px;
-    
-
 }
 
-#outer_div{
-    background-color: black;
-}
 
-.header_link{
+.header_link_stock_ticks {
 
-    display:inline-block;
+    display: inline-block;
     margin-right: 20px;
+    max-width: 100%;
 
 }
 
-#main_body{
+@media (max-width: 600px){
+
+    #stock_ticks {
+
+        font-size: 2vw;
+        
+    }
+
+    #profileMenu{
+
+        font-size: 2vw;
+
+    }
+
+    .dropdown-item{
+        font-size: 2vw;
+    }
+
+    #tradepro-text{
+        font-size: 5vw;
+    }
+
+    .btn-primary{
+        font-size: 2vw;
+    }
+
+    #skyline{
+
+        width: 85vw;
+        height: auto;
+
+    }
+
+}
+
+.header_link {
+
+    display: flex;
+    margin-right: 20px;
+    max-width: 100%;
+    overflow: auto;
+
+}
+
+#main_body {
     background-color: black;
 }
 
-.btn-primary{
+.btn-primary {
     background-color: #c0c0c0;
     color: black;
     border-color: white;
 }
-.btn-primary:hover{
- background-color: grey;   
+
+.btn-primary:hover {
+    background-color: grey;
 }
 
-.bg-primary{
+.bg-primary {
     background-color: #c0c0c0 !important;
     color: black;
 
 }
 
-.navbar-expand-lg{
+.navbar-expand-lg {
     background-color: #eceaea !important;
 }
 
-#navbarNav{
-    display:flex;
+#navbarNav {
+    display: flex;
     align-items: center;
     justify-content: center;
     margin-right: 20px;
 }
 
-#TradePro_Reimagined{
-    display:flex;
+#TradePro_Reimagined {
+    display: flex;
     align-items: center;
     justify-content: center;
     color: #eceaea !important;
@@ -57,18 +98,18 @@
 
 }
 
-.header{
+.header {
 
     color: #eceaea !important;
 
 }
 
-#port_dscrete_alloc{
+#port_dscrete_alloc {
     float: right;
     width: 50%;
 }
 
-#port_alloc{
+#port_alloc {
 
     float: left;
     width: 50%;
@@ -76,9 +117,10 @@
 }
 
 #skyline{
-    
-    max-width: 100%;
-    height: auto;
-    width: auto\9; /* ie8 */
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 5%;
 
 }
