@@ -14,7 +14,13 @@
 
 }
 
-@media (max-width: 600px){
+#enable-ethereum{
+
+    display: flex;
+    margin-left: 100%;
+}
+
+@media (max-width: 800px){
 
     #stock_ticks {
 
