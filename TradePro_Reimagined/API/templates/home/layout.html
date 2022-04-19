@@ -4,7 +4,12 @@
 
 <html lang="en">
 
+   
+
     <head>
+        
+
+
         <title>TradePro Reimagined</title>
 
         <!-- Required meta tags -->
@@ -38,7 +43,14 @@
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
             <li><a class="dropdown-item" href="{% url 'log_out' %}">Log Out</a></li>
             <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+
+            <!-- Trying to integrate javascript for MetaMask purposes -->
+            
+        
+            <li><a class="dropdown-item" onclick="integrate_metamask()">Enter Web3</a></li>
+        
         </ul>
+
         {% else %}
         <button class="btn btn-secondary dropdown-toggle" type="button"
             id="profileMenu" data-bs-toggle="dropdown"
@@ -54,6 +66,8 @@
         {% endif %}
 
         <!-- End of Profile Button -->
+
+
 
     <div id="head_div" >
 
@@ -86,15 +100,12 @@
 
                 <li class="header_link"><a  class="btn btn-primary" href="{% url 'index' %}" role="button">Home</a></li>
                 
+                <li class="header_link"><a class="btn btn-primary" href="{% url 'risk_assessment_test' %}" role="button">Risk Assessment Test</a></li>
                 
                 <li class="header_link"><a class="btn btn-primary" href="{% url 'portfolio' %}" role="button">Portfolio</a></li>
                 
                 
-                <li class="header_link"><a class="btn btn-primary" href="{% url 'risk_assessment_test' %}" role="button">Risk Assessment Test</a></li>
-                
-                
-                <li class="header_link"><a class="btn btn-primary" href="{% url 'social' %}" role="button">Social</a></li>
-                
+                                
 
             </div>
 
@@ -110,5 +121,11 @@
 
 
     </body>
+
+    <script  src= "{% static 'home/scripts/metamask.js' %}">
+        
+    </script> 
+        
+
 
 </html>

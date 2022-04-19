@@ -13,7 +13,7 @@ urlpatterns = [
         path("change_password", views.ChangePassword.as_view(), name="change_password"),
         path("recovery_questions", views.RecoveryQuestions.as_view(), name="recovery_questions"),
         path("recover_account", views.RecoverAccount.as_view(), name="recover_account"),
-        path("social", views.Social.as_view(), name="social")
+        path("receive_web_3_info", views.Web3Info.as_view())
 
 
 

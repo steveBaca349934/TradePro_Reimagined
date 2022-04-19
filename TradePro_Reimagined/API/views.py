@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,HttpResponse
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -9,6 +9,7 @@ from django.db.models import Max
 from datetime import datetime
 # Create your views here.
 from django.views import View
+import json
 
 login_form = forms.LoginForm()
 account_creation_form = forms.AccountCreationForm()
@@ -74,6 +75,30 @@ class BaseView(View):
         
 
         #return render(request, f"home/{html_name}.html",self.dict)
+
+class Web3Info(BaseView):
+
+    def get(self, request):
+        pass
+        
+        
+
+    def post(self, request):
+
+        req_res:dict = json.loads(request.body)
+        account_num = req_res.get('account_num')
+
+        if len(account_num) == 0:
+            return HttpResponse(status=400)
+
+        print(f" \n \n \n the account number is {account_num} \n \n \n ")
+        print(f" \n \n \n the type of account number is {type(account_num)} \n \n \n ")
+
+
+
+        # this could be incorrect {}
+        return HttpResponse(status=200)
+        
 
 class RecoverAccount(BaseView):
 
@@ -199,20 +224,12 @@ class Profile(BaseView):
     def post(self, request):
         pass
 
-class Social(BaseView):
-
-    def get(self, request):
-
-        super(Social, self).get(request)
-
-        return render(request, "home/social.html",self.dict)
-
-    def post(self, request):
-        pass
 
 class RAT(BaseView):
 
     def get(self, request, **kwargs):
+
+        super(RAT, self).get(request)
 
         if request.user.is_anonymous:
             return HttpResponseRedirect(reverse('log_in'))
