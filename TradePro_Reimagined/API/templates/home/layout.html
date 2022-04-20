@@ -31,7 +31,9 @@
         crossorigin="anonymous"></script>
 
 
+    <main id="swup" class="transition-fade">
 
+    
     <div class="dropdown" id="profile-button">
         {% if logged_in == True %}
         <!-- Beginning of Profile Button -->
@@ -45,9 +47,9 @@
             <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
 
             <!-- Trying to integrate javascript for MetaMask purposes -->
-            
+            <li><a class="dropdown-item" href="{% url 'web3_home' %}">Enter Web3</a></li>
         
-            <li><a class="dropdown-item" onclick="integrate_metamask()">Enter Web3</a></li>
+            <!-- <li><a class="dropdown-item" onclick="integrate_metamask()">Enter Web3</a></li> -->
         
         </ul>
 
@@ -122,10 +124,10 @@
 
     </body>
 
-    <script  src= "{% static 'home/scripts/metamask.js' %}">
+    <script defer src="https://unpkg.com/swup@latest/dist/swup.min.js"></script>  
+    <script defer type="module" src= "{% static 'home/scripts/swup.js' %}">
         
     </script> 
-        
 
-
+</main>
 </html>
