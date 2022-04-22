@@ -8,8 +8,6 @@
 
     <head>
         
-
-
         <title>TradePro Reimagined</title>
 
         <!-- Required meta tags -->
@@ -31,7 +29,10 @@
         crossorigin="anonymous"></script>
 
 
+    <main id="swup" class="transition-fade">
 
+    <div>
+    
     <div class="dropdown" id="profile-button">
         {% if logged_in == True %}
         <!-- Beginning of Profile Button -->
@@ -45,9 +46,9 @@
             <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
 
             <!-- Trying to integrate javascript for MetaMask purposes -->
-            
+            <li><a class="dropdown-item" href="{% url 'web3_home' %}">Enter Web3</a></li>
         
-            <li><a class="dropdown-item" onclick="integrate_metamask()">Enter Web3</a></li>
+            <!-- <li><a class="dropdown-item" onclick="integrate_metamask()">Enter Web3</a></li> -->
         
         </ul>
 
@@ -92,6 +93,8 @@
         </h1>
     </div>
 
+
+
     <!-- <div class="column"> -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
 
@@ -110,6 +113,8 @@
             </div>
 
         </nav>
+
+
     
 
 
@@ -122,10 +127,14 @@
 
     </body>
 
-    <script  src= "{% static 'home/scripts/metamask.js' %}">
-        
-    </script> 
-        
+    </div>
 
+    </main>
+
+    <script src="https://unpkg.com/swup@latest/dist/swup.min.js"></script>  
+
+    <script defer src= "{% static 'home/scripts/swup.js' %}">
+        
+    </script>
 
 </html>
