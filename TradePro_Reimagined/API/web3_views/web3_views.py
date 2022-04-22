@@ -20,8 +20,9 @@ class Web3_Home(View):
         # super(Web3_Home,self).get(request)
 
         print(f"\n \n \n the session user is : {request.session.get('user')} \n \n ")
+        self.dict = {"user":request.session.get("user")}
 
-        return render(request, "home/web3_home.html")
+        return render(request, "home/web3_home.html",self.dict)
 
         
 
