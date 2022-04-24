@@ -16,7 +16,9 @@ urlpatterns = [
         path("recovery_questions", views.RecoveryQuestions.as_view(), name="recovery_questions"),
         path("recover_account", views.RecoverAccount.as_view(), name="recover_account"),
         path("web3_home", web3_views.Web3_Home.as_view(), name="web3_home"),
-        path("receive_web_3_info", views.Web3Info.as_view())
+        path("web3_social", web3_views.Web3_Social.as_view(), name="web3_social"),
+        path("web3_portfolio",web3_views.Web3_Portfolio.as_view(), name="web3_portfolio"),
+        path("receive_web_3_info", views.Web3Info.as_view()),
 
 
 

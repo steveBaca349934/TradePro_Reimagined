@@ -1,0 +1,28 @@
+{% extends "home/layout.html" %}
+
+{% block body %}
+<h1 class="header">
+    Portfolio
+</h1>
+
+
+<div>
+<ul id="port_alloc" class="header">
+    {% for company, percentage in investment_vehicles_and_alloc.items%}
+    <li>{{company}}, {{percentage}}</li>
+
+    {% endfor %}
+</ul>
+</div>
+
+</div >
+<ul id="port_dscrete_alloc" class="header">
+    {% for company, num_stocks in discrete_investment_vehicles_and_alloc.items%}
+    <li>{{company}}, {{num_stocks}}</li>
+
+    {% endfor %}
+</ul>
+</div>
+
+
+{% endblock %}

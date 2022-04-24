@@ -31,16 +31,86 @@
         crossorigin="anonymous"></script>
 
     <main id="swup" class="transition-fade">
+    <div class="background_web3">    
 
-    <div id="web3_div">
-    <li class="header_link"><a  class="btn btn-primary" href="/{% url 'index' %}" role="button">Back To Web2</a></li>
+        <div class="dropdown" id="profile-button">
+            {% if logged_in == True %}
+            <!-- Beginning of Profile Button -->
+            <button class="btn btn-secondary dropdown-toggle" type="button"
+                id="profileMenu" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                {{ user }}
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li><a class="dropdown-item" href="{% url 'log_out' %}">Log Out</a></li>
+                <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+    
+                <!-- Trying to integrate javascript for MetaMask purposes -->
+                <li><a class="dropdown-item" href="{% url 'index' %}">Back To Web 2</a></li>
+            
+                <!-- <li><a class="dropdown-item" onclick="integrate_metamask()">Enter Web3</a></li> -->
+            
+            </ul>
+    
+            {% else %}
+            <button class="btn btn-secondary dropdown-toggle" type="button"
+                id="profileMenu" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Profile
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li><a class="dropdown-item" href="{% url 'log_in' %}">Log In</a></li>
+                <li><a class="dropdown-item" href="{% url 'open_an_account' %}">Open
+                        Account</a></li>
+            </ul>
+    
+            {% endif %}
+    
+            <!-- End of Profile Button -->
 
-    <h1 id="web_intro">
-        Welcome {{user}} To Web3
-    </h1>
+    
+    <!-- <li class="header_link"><a  class="btn btn-primary" href="/{% url 'index' %}" role="button">Back To Web2</a></li> -->
+           
+    <!-- <img  src= "{% static 'home/images/night-sky.jpeg' %}"> -->
 
+    <div class="container">
+        <center>
+        <a  class="btn btn-primary" href="{% url 'web3_home' %}" role="button">
+            Web3 Home
+            <img  id = "psychedellic" src= "{% static 'home/images/psychedellic.jpeg' %}">
+        </a>
+    </center>
+    </div>
+
+
+    <div class="container" id="web3Nav">
+    <li>
+        <a  id = "psychedellic-social" class="btn btn-primary" href="{% url 'web3_social' %}" role="button">
+            
+            <img id = "psychedellic" src= "{% static 'home/images/psychedellic-social.jpeg' %}">
+            Web3 Social
+        </a>
+    </li>
+    <li>
+        <a  id = "psychedellic-portfolio" class="btn btn-primary" href="{% url 'web3_portfolio' %}" role="button">
+            Web3 Portfolio            
+
+            <img id = "psychedellic" src= "{% static 'home/images/psychedellic-social.jpeg' %}">
+
+        </a>
+    </li>
+
+    </div>
+
+    
+
+    
+
+
+    </div>
+
+    
     <body id="main_body">
-
 
         {% block body %}
         {% endblock %}
@@ -48,11 +118,7 @@
 
     </body>
 
-        
 
-    </div>
-
-    </main>
 
     <script defer src="https://unpkg.com/swup@latest/dist/swup.min.js"></script>  
 
@@ -60,8 +126,4 @@
         
     </script>
 
-
-
-
-
-
+</main>

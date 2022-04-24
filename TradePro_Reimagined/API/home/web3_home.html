@@ -1,0 +1,129 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+   
+
+    <head>
+        
+
+
+        <title>TradePro Reimagined</title>
+
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- Bootstrap CSS -->
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+            integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+            crossorigin="anonymous">
+
+        <link rel="stylesheet" href="{% static 'home/css/styles.css' %}">
+    </head>
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+
+    <main id="swup" class="transition-fade">
+    <div class="background_web3">    
+
+        <div class="dropdown" id="profile-button">
+            {% if logged_in == True %}
+            <!-- Beginning of Profile Button -->
+            <button class="btn btn-secondary dropdown-toggle" type="button"
+                id="profileMenu" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                {{ user }}
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li><a class="dropdown-item" href="{% url 'log_out' %}">Log Out</a></li>
+                <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+    
+                <!-- Trying to integrate javascript for MetaMask purposes -->
+                <li><a class="dropdown-item" href="{% url 'index' %}">Back To Web 2</a></li>
+            
+                <!-- <li><a class="dropdown-item" onclick="integrate_metamask()">Enter Web3</a></li> -->
+            
+            </ul>
+    
+            {% else %}
+            <button class="btn btn-secondary dropdown-toggle" type="button"
+                id="profileMenu" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Profile
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li><a class="dropdown-item" href="{% url 'log_in' %}">Log In</a></li>
+                <li><a class="dropdown-item" href="{% url 'open_an_account' %}">Open
+                        Account</a></li>
+            </ul>
+    
+            {% endif %}
+    
+            <!-- End of Profile Button -->
+
+    
+    <!-- <li class="header_link"><a  class="btn btn-primary" href="/{% url 'index' %}" role="button">Back To Web2</a></li> -->
+           
+    <!-- <img  src= "{% static 'home/images/night-sky.jpeg' %}"> -->
+
+    <div class="container">
+        <center>
+        <a  class="btn btn-primary" href="{% url 'web3_home' %}" role="button">
+            Web3 Home
+            <img  id = "psychedellic" src= "{% static 'home/images/psychedellic.jpeg' %}">
+        </a>
+    </center>
+    </div>
+
+
+    <div class="container" id="web3Nav">
+    <li>
+        <a  id = "psychedellic-social" class="btn btn-primary" href="{% url 'web3_social' %}" role="button">
+            
+            <img id = "psychedellic" src= "{% static 'home/images/psychedellic-social.jpeg' %}">
+            Web3 Social
+        </a>
+    </li>
+    <li>
+        <a  id = "psychedellic-portfolio" class="btn btn-primary" href="{% url 'web3_portfolio' %}" role="button">
+            Web3 Portfolio            
+
+            <img id = "psychedellic" src= "{% static 'home/images/psychedellic-social.jpeg' %}">
+
+        </a>
+    </li>
+
+    </div>
+
+    
+
+    
+
+
+    </div>
+
+    
+    <body id="main_body">
+
+        {% block body %}
+        {% endblock %}
+
+
+    </body>
+
+
+
+    <script defer src="https://unpkg.com/swup@latest/dist/swup.min.js"></script>  
+
+    <script defer src= "{% static 'home/scripts/swup.js' %}">
+        
+    </script>
+
+</main>

@@ -66,6 +66,17 @@
 
 #main_body {
     background-color: black;
+    height: 100%;
+
+}
+
+#web3_main_body{
+    background-color: black;
+    height: 100%;
+    background-image: url('https://wallpaperaccess.com/full/3443102.jpg');
+    background-repeat: no-repeat;
+    background-size: cover; 
+
 }
 
 .btn-primary {
@@ -94,6 +105,16 @@
     justify-content: center;
     margin-right: 20px;
 }
+
+#web3Nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10%;
+    
+    
+}
+
 
 #TradePro_Reimagined {
     display: flex;
@@ -131,9 +152,28 @@
 
 }
 
+#psychedellic{
+    /* display: flex;
+    align-items: center;
+    justify-content: center; */
+    max-width: 40vh;
+    /* margin-left: 34% !important; */
+
+}
+
+/* #psychedellic-social{
+    margin-top: 10%;
+}
+
+#psychedellic-portfolio{
+    margin-top: 10%;
+    margin-left: 60%;
+
+} */
+
 .transition-fade{
     opacity: 1;
-    transition: 500ms;
+    transition: 750ms;
 }
 
 html.is-animating .transition-fade{
@@ -144,10 +184,31 @@ html.is-leaving .transition-fade{
     opacity: 0;
 }
 
-#web_intro{
-    color: white;
-}
+/* html.is-rendering .transition-fade{
+    opacity: 1;
+} */
+
 
 #web3_div{
     background-color: black;
+}
+
+.background_web3{
+    /* background-image: url("/Users/stevebaca/PycharmProjects/TradePro_Reimagined/TradePro_Reimagined/API/static/home/images/night-sky.jpeg"); */
+    background-image: url('https://wallpaperaccess.com/full/3443102.jpg');
+    /* background-repeat: no-repeat; */
+    background-size: cover; 
+    height:100vh;
+
+
+}
+
+html, body {
+    margin:0px;
+    height:100%;
+  }
+
+#psychedellic-portfolio{
+    margin-left: 30vh;
+
 }
