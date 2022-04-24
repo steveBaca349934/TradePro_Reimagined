@@ -20,7 +20,8 @@ class Web3_Home(View):
         # super(Web3_Home,self).get(request)
 
         print(f"\n \n \n the session user is : {request.session.get('user')} \n \n ")
-        self.dict = {"user":request.session.get("user")}
+        self.dict = {"user":request.session.get("user"),
+                     "logged_in": request.session.get('logged_in')}
 
         return render(request, "home/web3_home.html",self.dict)
 
@@ -30,4 +31,20 @@ class Web3_Home(View):
 
     def post(self, request):
 
+        pass
+
+class Web3_Social(View):
+
+    def get(self, request):
+        pass
+
+    def post(self, request):
+        pass
+
+class Web3_Portfolio(View):
+
+    def get(self, request):
+        pass
+
+    def post(self, request):
         pass

@@ -1,0 +1,214 @@
+#head_div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 40px;
+}
+
+
+.header_link_stock_ticks {
+
+    display: inline-block;
+    margin-right: 20px;
+    max-width: 100%;
+
+}
+
+#enable-ethereum{
+
+    display: flex;
+    margin-left: 100%;
+}
+
+@media (max-width: 800px){
+
+    #stock_ticks {
+
+        font-size: 2vw;
+        
+    }
+
+    #profileMenu{
+
+        font-size: 2vw;
+
+    }
+
+    .dropdown-item{
+        font-size: 2vw;
+    }
+
+    #tradepro-text{
+        font-size: 5vw;
+    }
+
+    .btn-primary{
+        font-size: 2vw;
+    }
+
+    #skyline{
+
+        width: 85vw;
+        height: auto;
+
+    }
+
+}
+
+.header_link {
+
+    display: flex;
+    margin-right: 20px;
+    max-width: 100%;
+    overflow: auto;
+
+}
+
+#main_body {
+    background-color: black;
+    height: 100%;
+
+}
+
+#web3_main_body{
+    background-color: black;
+    height: 100%;
+    background-image: url('https://wallpaperaccess.com/full/3443102.jpg');
+    background-repeat: no-repeat;
+    background-size: cover; 
+
+}
+
+.btn-primary {
+    background-color: #c0c0c0;
+    color: black;
+    border-color: white;
+}
+
+.btn-primary:hover {
+    background-color: grey;
+}
+
+.bg-primary {
+    background-color: #c0c0c0 !important;
+    color: black;
+
+}
+
+.navbar-expand-lg {
+    background-color: #eceaea !important;
+}
+
+#navbarNav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+}
+
+#web3Nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10%;
+    
+    
+}
+
+
+#TradePro_Reimagined {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #eceaea !important;
+    margin-right: 35px;
+
+}
+
+.header {
+
+    color: #eceaea !important;
+
+}
+
+#port_dscrete_alloc {
+    float: right;
+    width: 50%;
+}
+
+#port_alloc {
+
+    float: left;
+    width: 50%;
+
+}
+
+#skyline{
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 5%;
+
+}
+
+#psychedellic{
+    /* display: flex;
+    align-items: center;
+    justify-content: center; */
+    max-width: 40vh;
+    /* margin-left: 34% !important; */
+
+}
+
+/* #psychedellic-social{
+    margin-top: 10%;
+}
+
+#psychedellic-portfolio{
+    margin-top: 10%;
+    margin-left: 60%;
+
+} */
+
+.transition-fade{
+    opacity: 1;
+    transition: 750ms;
+}
+
+html.is-animating .transition-fade{
+    opacity: 1;
+}
+
+html.is-leaving .transition-fade{
+    opacity: 0;
+}
+
+/* html.is-rendering .transition-fade{
+    opacity: 1;
+} */
+
+
+#web3_div{
+    background-color: black;
+}
+
+.background_web3{
+    /* background-image: url("/Users/stevebaca/PycharmProjects/TradePro_Reimagined/TradePro_Reimagined/API/static/home/images/night-sky.jpeg"); */
+    background-image: url('https://wallpaperaccess.com/full/3443102.jpg');
+    /* background-repeat: no-repeat; */
+    background-size: cover; 
+    height:100vh;
+
+
+}
+
+html, body {
+    margin:0px;
+    height:100%;
+  }
+
+#psychedellic-portfolio{
+    margin-left: 30vh;
+
+}
