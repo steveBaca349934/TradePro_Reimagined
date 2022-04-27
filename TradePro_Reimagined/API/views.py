@@ -17,6 +17,7 @@ change_pdub = forms.ChangePDub()
 recovery_questions_form = forms.RecoveryQuestions()
 recover_account_form = forms.RecoverAccountForm()
 rat_form = forms.RiskAssessmentTest()
+financial_form = forms.FinacialIndex()
 
 
 
@@ -189,17 +190,18 @@ class Portfolio(BaseView):
 
             # get stock market data and build an optimal portfolio
             # based off of the RAT score
-            s_and_p_tickers = utils.scrape_stock_tickers()
-            data = utils.get_ticker_data(s_and_p_tickers)
+            # s_and_p_tickers = utils.scrape_stock_tickers()
+            # data = utils.get_ticker_data(s_and_p_tickers)
 
-            investment_vehicles_and_alloc:dict = utils.retrieve_optimal_portfolio(data, s_and_p_tickers ,self.dict['avg_of_scores'])
+            # investment_vehicles_and_alloc:dict = utils.retrieve_optimal_portfolio(data, s_and_p_tickers ,self.dict['avg_of_scores'])
 
-            for company, allocations in investment_vehicles_and_alloc.items():
-                investment_vehicles_and_alloc[company] = round(allocations,3)
+            # for company, allocations in investment_vehicles_and_alloc.items():
+            #     investment_vehicles_and_alloc[company] = round(allocations,3)
 
 
-            self.dict['investment_vehicles_and_alloc'] = investment_vehicles_and_alloc
-            self.dict['discrete_investment_vehicles_and_alloc'] = utils.retrieve_optimal_portfolio_discrete_allocations(data, s_and_p_tickers, self.dict['avg_of_scores'])
+            # self.dict['investment_vehicles_and_alloc'] = investment_vehicles_and_alloc
+            # self.dict['discrete_investment_vehicles_and_alloc'] = utils.retrieve_optimal_portfolio_discrete_allocations(data, s_and_p_tickers, self.dict['avg_of_scores'])
+            self.dict['financial_form'] = financial_form
          
             return render(request, "home/portfolio.html",self.dict)
             
@@ -210,8 +212,41 @@ class Portfolio(BaseView):
             return HttpResponseRedirect(reverse('risk_assessment_test'))
 
     def post(self, request):
+        super(Portfolio, self).post(request)
 
-        pass
+        form = forms.FinacialIndex(request.POST)
+        if form.is_valid():
+            print(f"\n \n \n the data actually found in the form is {form.cleaned_data.get('Financials')} \n \n \n ")
+
+            res = form.cleaned_data.get('Financials')
+
+            # get stock market data and build an optimal portfolio
+            # based off of the RAT score
+            # s_and_p_tickers = utils.scrape_stock_tickers()
+            # data = utils.get_ticker_data(s_and_p_tickers)
+
+            # investment_vehicles_and_alloc:dict = utils.retrieve_optimal_portfolio(data, s_and_p_tickers ,self.dict['avg_of_scores'])
+
+            # for company, allocations in investment_vehicles_and_alloc.items():
+            #     investment_vehicles_and_alloc[company] = round(allocations,3)
+
+
+            # self.dict['investment_vehicles_and_alloc'] = investment_vehicles_and_alloc
+            # self.dict['discrete_investment_vehicles_and_alloc'] = utils.retrieve_optimal_portfolio_discrete_allocations(data, s_and_p_tickers, self.dict['avg_of_scores'])
+
+
+        else:
+
+            # if the person didn't input the data properly this is an annoynace
+            # and we make them do it again lol
+            self.dict['financial_form'] = financial_form
+
+
+            return render(request, "home/portfolio.html",self.dict)
+
+
+        #TODO: obviously going to need to change this
+        return HttpResponseRedirect(reverse('portfolio'))
 
 class Profile(BaseView):
 

@@ -1,9 +1,25 @@
 {% extends "home/layout.html" %}
-
+{% load static %}
 {% block body %}
 <h1 class="header">
     Portfolio
 </h1>
+
+    <form class="header" action="{% url 'portfolio' %}" method="post">
+        {% csrf_token %}
+        {{financial_form.as_p}}
+        <input type="submit">
+    
+    </form>
+
+ 
+    <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" ></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.js"></script>
+    <script defer type="text/javascript" src= "{% static 'home/scripts/indices.js' %}"> -->
+
+        
 
 
 <div>
@@ -23,6 +39,7 @@
     {% endfor %}
 </ul>
 </div>
+
 
 
 {% endblock %}

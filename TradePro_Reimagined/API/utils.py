@@ -2,6 +2,7 @@ from django.shortcuts import render
 import re
 import yfinance as yf
 import pandas as pd
+import numpy as np
 from datetime import datetime, date
 import sys
 import copy
@@ -9,6 +10,7 @@ from pypfopt.efficient_frontier import EfficientFrontier
 from pypfopt import  risk_models
 from pypfopt import expected_returns
 from pypfopt.discrete_allocation import DiscreteAllocation, get_latest_prices
+
 
 def check_pw_is_robust(pw:str)->bool:
     """
@@ -64,20 +66,49 @@ def scrape_web_data()->dict:
         'DJIA': round(djia_prev_close,1)
     }
 
-def scrape_stock_tickers()->dict:
+def scrape_stock_tickers(S_AND_P = False, NASDAQ = False, DJIA = False )->dict:
     """
     Uses pandas to get list of all stock tickers from S&P 500
 
     returns dict of stock tickers with keys as tickers, vals as full company name
     """
-    res = []
-    payload=pd.read_html('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')
-    stocks = payload[0]
+    
+    res_dict = dict()
 
-    tickers = stocks['Symbol'].tolist()
-    company_names = stocks['Security'].tolist()
+    if S_AND_P:
+        s_and_p_payload=pd.read_html('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')
+        s_and_p_stocks = s_and_p_payload[0]
 
-    res_dict = dict(zip(tickers,company_names))
+        s_and_p_tickers = s_and_p_stocks['Symbol'].tolist()
+        s_and_p_company_names = s_and_p_stocks['Security'].tolist()
+
+        for index, ticker in enumerate(s_and_p_tickers):
+            if ticker not in res_dict:
+                res_dict[ticker] = s_and_p_company_names[index]
+
+    if NASDAQ:
+
+        nasdaq_payload=pd.read_html('https://en.wikipedia.org/wiki/Nasdaq-100')
+        nasdaq_stocks = nasdaq_payload[3]
+
+        nasdaq_tickers = nasdaq_stocks['Ticker'].tolist()
+        nasdaq_company_names = nasdaq_stocks['Company'].tolist()
+
+        for index, ticker in enumerate(nasdaq_tickers):
+            if ticker not in res_dict:
+                res_dict[ticker] = nasdaq_company_names[index]
+
+    if DJIA:
+        
+        djia_payload=pd.read_html('https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average')
+        djia_stocks = djia_payload[1]
+
+        djia_tickers = djia_stocks['Symbol'].tolist()
+        djia_company_names = djia_stocks['Company'].tolist()
+
+        for index, ticker in enumerate(djia_tickers):
+            if ticker not in res_dict:
+                res_dict[ticker] = djia_company_names[index]
 
     return res_dict
 
@@ -97,23 +128,31 @@ def get_ticker_data(tickers:dict)->pd.DataFrame:
     for ticker in tickers:
 
         # limiting data for now
-        if index == 16:
-            break
+        # if index == 16:
+        #     break
 
         ticker_obj = yf.Ticker(ticker)
         
         data = ticker_obj.history(period="2y")['Close']
 
-        intermediate_df = pd.DataFrame(data)
-        intermediate_df.rename(columns= {'Close':f'{ticker}'}, inplace=True)
-                
-        if index == 0:
-            df = intermediate_df
+        if len(data) > 0 and None not in data and np.nan not in data:
 
+            intermediate_df = pd.DataFrame(data)
+            intermediate_df.rename(columns= {'Close':f'{ticker}'}, inplace=True)
+                    
+            if index == 0:
+                df = intermediate_df
+
+            else:
+                df = df.join(intermediate_df)
+
+            index += 1
+        
         else:
-            df = df.join(intermediate_df)
-
-        index += 1
+            print("\n \n \n the data looks like: ")
+            print(data)
+            print("\n \n \n ")
+            continue
 
     return df
 
@@ -128,6 +167,18 @@ def retrieve_optimal_portfolio(ticker_df:pd.DataFrame, tickers:dict, rat:int)->d
     portfolio should allocate to each investment vehicle 
     """
     mean = expected_returns.mean_historical_return(ticker_df)
+
+    #TODO: if the mean return of the stock has been negative over the past 
+    # 2 years, then there's no reason to keep it in the calculation
+    # so drop it...
+    # may need to reevaluate this later though
+
+    for index in mean.index:
+        
+        if mean[index] < 0:
+
+            mean.drop(index, axis=0, inplace=True)
+            ticker_df.drop(index, axis=1, inplace=True)
 
     sample_covar_mat = risk_models.sample_cov(ticker_df)
 
@@ -171,6 +222,13 @@ def retrieve_optimal_portfolio_discrete_allocations(ticker_df:pd.DataFrame, tick
     """
     mean = expected_returns.mean_historical_return(ticker_df)
 
+    for index in mean.index:
+        
+        if mean[index] < 0:
+
+            mean.drop(index, axis=0, inplace=True)
+            ticker_df.drop(index, axis=1, inplace=True)
+
     sample_covar_mat = risk_models.sample_cov(ticker_df)
 
     ef = EfficientFrontier(mean,sample_covar_mat, weight_bounds=(0, 1))
@@ -209,10 +267,18 @@ def retrieve_optimal_portfolio_discrete_allocations(ticker_df:pd.DataFrame, tick
 
 
 if __name__ == '__main__':
-    tickers = scrape_stock_tickers()
+
+    tickers = scrape_stock_tickers(False,True,False )
+
     ticker_df = get_ticker_data(tickers)
-    # print(retrieve_optimal_portfolio(ticker_df, tickers, 2.5))
 
-    # # print(f"ticker df looks like \n \n {ticker_df.head()}")
+    print(f" \n \n \n the result of tickers_df is {ticker_df} \n \n \n ")
 
-    print(retrieve_optimal_portfolio_discrete_allocations(ticker_df, tickers, 3))
+    try:    
+        print(retrieve_optimal_portfolio(ticker_df, tickers, 2.5))
+    except Exception as e:
+        raise(e)
+
+    # print(f"ticker df looks like \n \n {ticker_df.head()}")
+
+    # print(retrieve_optimal_portfolio_discrete_allocations(ticker_df, tickers, 3))

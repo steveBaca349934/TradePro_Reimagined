@@ -44,6 +44,8 @@
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 <li><a class="dropdown-item" href="{% url 'log_out' %}">Log Out</a></li>
                 <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+                <li><button class="dropdown-item" onclick="integrate_metamask()">Integrate MetaMask</button></li>
+                <li><button class="dropdown-item" onclick="integrate_metamask()">Integrate Brave</button></li>
     
                 <!-- Trying to integrate javascript for MetaMask purposes -->
                 <li><a class="dropdown-item" href="{% url 'index' %}">Back To Web 2</a></li>
@@ -67,6 +69,7 @@
             {% endif %}
     
             <!-- End of Profile Button -->
+      
 
     
     <!-- <li class="header_link"><a  class="btn btn-primary" href="/{% url 'index' %}" role="button">Back To Web2</a></li> -->
@@ -126,4 +129,7 @@
         
     </script>
 
+    <script defer src= "{% static 'home/scripts/metamask.js' %}">
+            
+    </script>
 </main>
