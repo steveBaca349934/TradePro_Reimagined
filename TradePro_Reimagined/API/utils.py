@@ -9,7 +9,10 @@ import copy
 from pypfopt.efficient_frontier import EfficientFrontier
 from pypfopt import  risk_models
 from pypfopt import expected_returns
+from pypfopt.risk_models import CovarianceShrinkage
 from pypfopt.discrete_allocation import DiscreteAllocation, get_latest_prices
+from datetime import datetime, timedelta
+from pandas_datareader import data
 
 
 def check_pw_is_robust(pw:str)->bool:
@@ -121,21 +124,27 @@ def get_ticker_data(tickers:dict)->pd.DataFrame:
 
     df = pd.DataFrame()
     
-    # eventually on a production ready instance, would
-    # need to do more than 15 tickers lol
+    # Im trying to exclude data for any tickers that have less
+    # than a full 2 years of data points
+    # using google as then standard because I know that it does
+    # have a full 2 years
+
+    past_date = datetime.today() - timedelta(days=730)
+    today = datetime.today()
+
+    # max_l = len(data.DataReader("GOOGL", start=past_date, end=today, data_source='yahoo')['Adj Close'])
+    max_l = len(yf.Ticker("GOOGL").history(start = past_date, end = today)['Close'])
+
+    print(f"\n \n the max length is {max_l} \n \n ")
 
     index = 0
     for ticker in tickers:
 
-        # limiting data for now
-        # if index == 16:
-        #     break
-
         ticker_obj = yf.Ticker(ticker)
         
-        data = ticker_obj.history(period="2y")['Close']
+        data = ticker_obj.history(start = past_date, end = today)['Close']
 
-        if len(data) > 0 and None not in data and np.nan not in data:
+        if len(data) == max_l:
 
             intermediate_df = pd.DataFrame(data)
             intermediate_df.rename(columns= {'Close':f'{ticker}'}, inplace=True)
@@ -149,11 +158,14 @@ def get_ticker_data(tickers:dict)->pd.DataFrame:
             index += 1
         
         else:
-            print("\n \n \n the data looks like: ")
+
+            print(f"\n \n \n the data for {ticker} looks like: ")
             print(data)
             print("\n \n \n ")
+            print(f"the length of the data is {len(data)}")
             continue
 
+    
     return df
 
 
@@ -180,9 +192,19 @@ def retrieve_optimal_portfolio(ticker_df:pd.DataFrame, tickers:dict, rat:int)->d
             mean.drop(index, axis=0, inplace=True)
             ticker_df.drop(index, axis=1, inplace=True)
 
-    sample_covar_mat = risk_models.sample_cov(ticker_df)
+    # try:
+    #     sample_covar_mat = risk_models.sample_cov(ticker_df)
+    # except Exception as e:
+    #     print("the res of sample cov is :\n ")
+    #     print(e)
 
-    ef = EfficientFrontier(mean,sample_covar_mat, weight_bounds=(0, 1))
+    try:
+        S = CovarianceShrinkage(ticker_df).ledoit_wolf()
+    except Exception as e:
+        print("the res of Cov Shrinkage is :\n ")
+        print(e)
+
+    ef = EfficientFrontier(mean, S , weight_bounds=(0, 1))
 
     # the RAT score will be used to calculate 
     # the client's intended returns 
@@ -220,24 +242,27 @@ def retrieve_optimal_portfolio_discrete_allocations(ticker_df:pd.DataFrame, tick
     return a dictionary of investment vehicle with percentages that their 
     portfolio should allocate to each investment vehicle 
     """
+
     mean = expected_returns.mean_historical_return(ticker_df)
 
-    for index in mean.index:
-        
-        if mean[index] < 0:
+    while len(mean) > 40:
+        cut_off:int = np.percentile(mean, 25)
+        for index in mean.index:
+            
+            if mean[index] <= cut_off:
 
-            mean.drop(index, axis=0, inplace=True)
-            ticker_df.drop(index, axis=1, inplace=True)
+                mean.drop(index, axis=0, inplace=True)
+                ticker_df.drop(index, axis=1, inplace=True)
+                
+    S = risk_models.sample_cov(ticker_df)
+    # ticker_df.to_csv("output_before_error.csv", index=False)
+    # S = CovarianceShrinkage(ticker_df).ledoit_wolf()
 
-    sample_covar_mat = risk_models.sample_cov(ticker_df)
-
-    ef = EfficientFrontier(mean,sample_covar_mat, weight_bounds=(0, 1))
-
+    ef = EfficientFrontier(mean,S, weight_bounds=(0, 1))
     # the RAT score will be used to calculate 
     # the client's intended returns 
     # the higher the RAT, the higher the 
     # expected returns
-    
     ef._max_return_value = copy.deepcopy(ef)._max_return()
 
     these_expected_returns = 0
@@ -252,12 +277,30 @@ def retrieve_optimal_portfolio_discrete_allocations(ticker_df:pd.DataFrame, tick
         these_expected_returns = rat * .1
 
     res = ef.efficient_return(these_expected_returns)
-    weights = ef.clean_weights() #to clean the raw weights
+    weights:dict = ef.clean_weights() #to clean the raw weights
+
+
+    if len(weights) <= 10:
+        break
+
+    print(f"\n \n after epoch {epoch} the weights are: \n \n")
+    print(weights)
+
+    print(f"\n \n the final weights are {weights} \n \n ")
 
     latest_prices = get_latest_prices(ticker_df)
+
+    print(f"\n \n the latest prices are {latest_prices} \n \n ")
     
-    discrete_allocation = DiscreteAllocation(weights, latest_prices , total_portfolio_value = 100000)
+    discrete_allocation = DiscreteAllocation(weights, latest_prices )
+
+    print(f"\n \n the discrete allocation is {discrete_allocation} \n \n ")
+
     allocation, leftover = discrete_allocation.lp_portfolio()
+
+    print(f"allocation is {allocation}")
+    print(f"leftover is {leftover}")
+
     final_res = dict()
 
     for ticker, alloc in allocation.items():
@@ -268,17 +311,21 @@ def retrieve_optimal_portfolio_discrete_allocations(ticker_df:pd.DataFrame, tick
 
 if __name__ == '__main__':
 
-    tickers = scrape_stock_tickers(False,True,False )
+    tickers = scrape_stock_tickers(True,True,True )
 
-    ticker_df = get_ticker_data(tickers)
+    # ticker_df = get_ticker_data(tickers)
 
-    print(f" \n \n \n the result of tickers_df is {ticker_df} \n \n \n ")
+    # ticker_df.to_excel("ticker_df.xlsx", index=False)
 
-    try:    
-        print(retrieve_optimal_portfolio(ticker_df, tickers, 2.5))
-    except Exception as e:
-        raise(e)
+    ticker_df = pd.read_excel("ticker_df.xlsx")
+
+    # print(f" \n \n \n the result of tickers_df is {ticker_df} \n \n \n ")
+
+        
+    # print(f"\n \n the portfoliio looks like {retrieve_optimal_portfolio(ticker_df, tickers, 2.5)} \n \n ")
+    
 
     # print(f"ticker df looks like \n \n {ticker_df.head()}")
 
-    # print(retrieve_optimal_portfolio_discrete_allocations(ticker_df, tickers, 3))
+    # print(f"\n \n the ticker_df if we slice 5 is {ticker_df.iloc[ : , :5]} \n \n ")
+    print(retrieve_optimal_portfolio_discrete_allocations(ticker_df, tickers, 3))

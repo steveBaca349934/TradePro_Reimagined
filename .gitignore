@@ -6,3 +6,4 @@ tradepro_venv/*
 *.env
 *.kube/
 TradePro_Reimagined/.env.prod
+*.xlsx
