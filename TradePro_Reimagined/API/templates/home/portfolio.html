@@ -4,13 +4,22 @@
 <h1 class="header">
     Portfolio
 </h1>
-
+    
     <form class="header" action="{% url 'portfolio' %}" method="post">
         {% csrf_token %}
         {{financial_form.as_p}}
         <input type="submit">
     
     </form>
+
+    <form class="header" action="{% url 'portfolio' %}" method="post">
+        {% csrf_token %}
+        {{mutual_fund_form.as_p}}
+        <input type="submit">
+    
+    </form>
+
+
 
  
     <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" ></script>

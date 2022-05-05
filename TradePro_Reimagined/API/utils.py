@@ -234,7 +234,7 @@ def retrieve_optimal_portfolio(ticker_df:pd.DataFrame, tickers:dict, rat:int)->d
 
     return final_res
 
-def retrieve_optimal_portfolio_discrete_allocations(ticker_df:pd.DataFrame, tickers:dict, rat:int)->dict:
+def retrieve_optimal_portfolio_discrete_allocations(ticker_df:pd.DataFrame, tickers:dict, rat:int, portfolio_amount:float)->dict:
     """
     Given a risk assessment score, which is a measurement
     of a client's risk tolerance
@@ -253,7 +253,7 @@ def retrieve_optimal_portfolio_discrete_allocations(ticker_df:pd.DataFrame, tick
 
                 mean.drop(index, axis=0, inplace=True)
                 ticker_df.drop(index, axis=1, inplace=True)
-                
+
     S = risk_models.sample_cov(ticker_df)
     # ticker_df.to_csv("output_before_error.csv", index=False)
     # S = CovarianceShrinkage(ticker_df).ledoit_wolf()
@@ -279,27 +279,11 @@ def retrieve_optimal_portfolio_discrete_allocations(ticker_df:pd.DataFrame, tick
     res = ef.efficient_return(these_expected_returns)
     weights:dict = ef.clean_weights() #to clean the raw weights
 
-
-    if len(weights) <= 10:
-        break
-
-    print(f"\n \n after epoch {epoch} the weights are: \n \n")
-    print(weights)
-
-    print(f"\n \n the final weights are {weights} \n \n ")
-
     latest_prices = get_latest_prices(ticker_df)
-
-    print(f"\n \n the latest prices are {latest_prices} \n \n ")
     
-    discrete_allocation = DiscreteAllocation(weights, latest_prices )
-
-    print(f"\n \n the discrete allocation is {discrete_allocation} \n \n ")
+    discrete_allocation = DiscreteAllocation(weights, latest_prices, total_portfolio_value=portfolio_amount )
 
     allocation, leftover = discrete_allocation.lp_portfolio()
-
-    print(f"allocation is {allocation}")
-    print(f"leftover is {leftover}")
 
     final_res = dict()
 
@@ -313,13 +297,13 @@ if __name__ == '__main__':
 
     tickers = scrape_stock_tickers(True,True,True )
 
-    # ticker_df = get_ticker_data(tickers)
+    ticker_df = get_ticker_data(tickers)
 
     # ticker_df.to_excel("ticker_df.xlsx", index=False)
 
-    ticker_df = pd.read_excel("ticker_df.xlsx")
+    # ticker_df = pd.read_excel("ticker_df.xlsx")
 
-    # print(f" \n \n \n the result of tickers_df is {ticker_df} \n \n \n ")
+    print(f" \n \n \n the result of tickers_df is {ticker_df} \n \n \n ")
 
         
     # print(f"\n \n the portfoliio looks like {retrieve_optimal_portfolio(ticker_df, tickers, 2.5)} \n \n ")
@@ -328,4 +312,4 @@ if __name__ == '__main__':
     # print(f"ticker df looks like \n \n {ticker_df.head()}")
 
     # print(f"\n \n the ticker_df if we slice 5 is {ticker_df.iloc[ : , :5]} \n \n ")
-    print(retrieve_optimal_portfolio_discrete_allocations(ticker_df, tickers, 3))
+    print(retrieve_optimal_portfolio_discrete_allocations(ticker_df, tickers, 3, 50000))
