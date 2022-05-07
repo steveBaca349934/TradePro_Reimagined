@@ -24,4 +24,14 @@ class StockData(models.Model):
     nasdaq = models.JSONField()
     djia = models.JSONField()
 
+# class MutualFundData(models.Model):
+#     date =  models.DateTimeField(auto_now = True)
+#     vanguard = models.JSONField()
+#     fidelity = models.JSONField()
+#     schwab = models.JSONField()
+#     t_rowe = models.JSONField()
+#     td_ameritrade = models.JSONField()
+#     merrill_lynch = models.JSONField()
+
+
 
