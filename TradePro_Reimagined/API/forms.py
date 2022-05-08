@@ -157,9 +157,7 @@ class MutualFundProviders(forms.Form):
         ("Vanguard", "Vanguard"),
         ("Fidelity", "Fidelity"),
         ("Schwab", "Schwab"),
-        ("T_Rowe", "T_Rowe"),
-        ("TD_Ameritrade", "TD_Ameritrade"),
-        ("Merrill_Lynch", "Merrill_Lynch"),
+
     )
     Mutual_Fund = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
                                           choices=OPTIONS)

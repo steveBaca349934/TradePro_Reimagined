@@ -222,6 +222,13 @@ class Portfolio(BaseView):
             score = query_risk_assessment_model[0].score
             portfolio_amount = query_risk_assessment_model[0].portfolio_amount
 
+            query_stock_data = models.StockData.objects.all()
+            query_mutual_fund_data = models.MutualFundData.objects.all()
+
+            print(f"\n the results from querying the stock market data are {query_stock_data} \n ")
+            print(f"\n the results from querying the mutual_fund data are {query_mutual_fund_data} \n ")
+           
+
             form = forms.FinacialIndex(request.POST)
             if form.is_valid():
                 print(f"\n \n \n the data actually found in the form is {form.cleaned_data.get('Financials')} \n \n \n ")
@@ -237,9 +244,9 @@ class Portfolio(BaseView):
                 
                 # get stock market data and build an optimal portfolio
                 # based off of the RAT score
-                tickers = utils.scrape_stock_tickers(S_AND_P = res_dict.get('S&P'), NASDAQ = res_dict.get('DJIA'), DJIA = res_dict.get('NASDAQ') )
+                # tickers = utils.scrape_stock_tickers(S_AND_P = res_dict.get('S&P'), NASDAQ = res_dict.get('DJIA'), DJIA = res_dict.get('NASDAQ') )
 
-                data = utils.get_ticker_data(tickers)
+                # data = utils.get_ticker_data(tickers)
 
                 # investment_vehicles_and_alloc:dict = utils.retrieve_optimal_portfolio(data, tickers ,self.dict['avg_of_scores'])
 
@@ -248,7 +255,7 @@ class Portfolio(BaseView):
 
 
                 # self.dict['investment_vehicles_and_alloc'] = investment_vehicles_and_alloc
-                self.dict['discrete_investment_vehicles_and_alloc'] = utils.retrieve_optimal_portfolio_discrete_allocations(data, tickers, score, portfolio_amount)
+                # self.dict['discrete_investment_vehicles_and_alloc'] = utils.retrieve_optimal_portfolio_discrete_allocations(data, tickers, score, portfolio_amount)
 
 
                 return render(request, "home/portfolio.html",self.dict)

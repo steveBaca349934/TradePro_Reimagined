@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'storages',
     'django_extensions',
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -196,3 +197,7 @@ STATICFILES_DIRS = [
 
 # setting up https
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+CRONJOBS = [
+    ('0 5 * * MON-FRI', 'API.scripts.main')
+]
