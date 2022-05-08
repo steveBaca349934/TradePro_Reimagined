@@ -137,3 +137,27 @@ class RiskAssessmentTest(forms.Form):
                             ,(3,"Somewhat stable")
                             ,(4,"Stable")
                             ,(5,"Very stable")]))
+
+    question_nine = forms.CharField(label="What is the total amount of $ you are willing to invest?",required= True,
+        widget= forms.TextInput
+        (attrs={'placeholder':'$ Amount'}))
+
+class FinacialIndex(forms.Form):
+    OPTIONS = (
+        ("S&P", "S&P500"),
+        ("DJIA", "DJIA"),
+        ("NASDAQ", "NASDAQ"),
+    )
+    Financials = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+                                          choices=OPTIONS)
+
+
+class MutualFundProviders(forms.Form):
+    OPTIONS = (
+        ("Vanguard", "Vanguard"),
+        ("Fidelity", "Fidelity"),
+        ("Schwab", "Schwab"),
+
+    )
+    Mutual_Fund = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+                                          choices=OPTIONS)

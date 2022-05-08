@@ -212,3 +212,23 @@ html, body {
     margin-left: 30vh;
 
 }
+
+#MultipleCheckboxes{
+    /* background-color: white; */
+    color: white;
+}
+
+#select-portfolio-tool{
+    color: white;
+    /* background-color: white; */
+
+}
+
+.multi-select-container{
+    display: flex;
+    /* margin-left: 36%; */
+    background-color: white;
+
+    width: 20%;
+    
+}

@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'storages',
+    'django_extensions',
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -195,3 +197,7 @@ from API.cdn.conf import *
 
 # setting up https
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+CRONJOBS = [
+    ('0 5 * * MON-FRI', 'API.scripts.main')
+]

@@ -4,6 +4,7 @@ from .web3_views import web3_views
 
 
 urlpatterns = [
+
         path("",views.Index.as_view(),name="index"),
         path("portfolio", views.Portfolio.as_view(), name="portfolio"),
         path("log_in", views.log_in, name="log_in"),
@@ -19,10 +20,4 @@ urlpatterns = [
         path("web3_social", web3_views.Web3_Social.as_view(), name="web3_social"),
         path("web3_portfolio",web3_views.Web3_Portfolio.as_view(), name="web3_portfolio"),
         path("receive_web_3_info", views.Web3Info.as_view()),
-
-
-
-
-
-
 ]
