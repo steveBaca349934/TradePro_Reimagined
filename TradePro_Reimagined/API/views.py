@@ -225,28 +225,33 @@ class Portfolio(BaseView):
             query_stock_data = models.StockData.objects.all()
             query_mutual_fund_data = models.MutualFundData.objects.all()
 
-            print(f"\n the results from querying the stock market data are {query_stock_data} \n ")
-            print(f"\n the results from querying the mutual_fund data are {query_mutual_fund_data} \n ")
-           
+            stocks_form = forms.FinacialIndex(request.POST)
+            mutual_fund_form = forms.MutualFundProviders(request.POST)
 
-            form = forms.FinacialIndex(request.POST)
-            if form.is_valid():
-                print(f"\n \n \n the data actually found in the form is {form.cleaned_data.get('Financials')} \n \n \n ")
 
-                res = form.cleaned_data.get('Financials')
-                res_dict = {'S&P':False, 'DJIA': False, 'NASDAQ':False}
+            if stocks_form.is_valid() and mutual_fund_form.is_valid():
+             
+                stocks_res = stocks_form.cleaned_data.get('Financials')
+                mf_res = mutual_fund_form.cleaned_data.get('Mutual_Fund')
+                stocks_res_dict = {'S&P':False, 'DJIA': False, 'NASDAQ':False}
+                mf_res_dict = {'Vanguard':False, 'Fidelity': False, 'Schwab':False}
 
-                for market in res:
-                    if market in res_dict:
-                        res_dict[market] = True
+                for market in stocks_res:
+                    if market in stocks_res_dict:
+                        stocks_res_dict[market] = True
 
-                print(f"res_dict is {res_dict}")
-                
+                for mf in mf_res:
+                    if mf in mf_res_dict:
+                        mf_res_dict[mf] = True
+
+                tickers_df = utils.extract_stock_data(query_stock_data, S_AND_P = stocks_res_dict.get('S&P'), 
+                                                      NASDAQ = stocks_res_dict.get('DJIA'), DJIA = stocks_res_dict.get('NASDAQ'))
+
+
+                # TODO: write an extract_mutual_fund_data function in utils
+
                 # get stock market data and build an optimal portfolio
                 # based off of the RAT score
-                # tickers = utils.scrape_stock_tickers(S_AND_P = res_dict.get('S&P'), NASDAQ = res_dict.get('DJIA'), DJIA = res_dict.get('NASDAQ') )
-
-                # data = utils.get_ticker_data(tickers)
 
                 # investment_vehicles_and_alloc:dict = utils.retrieve_optimal_portfolio(data, tickers ,self.dict['avg_of_scores'])
 
@@ -255,7 +260,11 @@ class Portfolio(BaseView):
 
 
                 # self.dict['investment_vehicles_and_alloc'] = investment_vehicles_and_alloc
-                # self.dict['discrete_investment_vehicles_and_alloc'] = utils.retrieve_optimal_portfolio_discrete_allocations(data, tickers, score, portfolio_amount)
+                print(f"\n the alledged portfolio amount is {portfolio_amount} \n \n ")
+
+                opt_portfolio_dict = utils.retrieve_optimal_portfolio_discrete_allocations(tickers_df, score, portfolio_amount)
+
+                self.dict['discrete_investment_vehicles_and_alloc'] = opt_portfolio_dict
 
 
                 return render(request, "home/portfolio.html",self.dict)
@@ -325,16 +334,22 @@ class RAT(BaseView):
         # The last question in the RAT is a question about the total amount of $ the client has to invest
         # We obviously don't want to throw this into the average, because the RAT score is supposed 
         # to be between 1 and 5
-        scores = [int(request.POST[question]) for question in request.POST if 'question' in question.lower() and question != 'question_nine']
-        avg_of_scores = sum(scores)/len(scores)
-        
+        rat_form = forms.RiskAssessmentTest(request.POST)
 
-        self.dict['avg_of_scores'] = avg_of_scores
+        if rat_form.is_valid():
 
-        rat_score = models.RiskAssessmentScore.objects.create(user=request.user,
-                                                         score = avg_of_scores)
+            scores = [int(rat_form.cleaned_data.get(question)) for question in rat_form.cleaned_data if 'question' in question.lower() and question != 'question_nine']
+            avg_of_scores = sum(scores)/len(scores)
+            port_amount = rat_form.cleaned_data.get('question_nine')
+            
 
-        rat_score.save()
+            self.dict['avg_of_scores'] = avg_of_scores
+
+            rat_score = models.RiskAssessmentScore.objects.create(user=request.user,
+                                                            score = avg_of_scores,
+                                                            portfolio_amount = port_amount)
+
+            rat_score.save()
 
         return render(request, "home/rat.html",self.dict)
 

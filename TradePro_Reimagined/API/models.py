@@ -10,7 +10,7 @@ class UserProfile(models.Model):
 class RiskAssessmentScore(models.Model):
     user = models.OneToOneField(User, null = True, on_delete = models.SET_NULL)
     score = models.FloatField()
-    portfolio_amount = models.FloatField(default=1000000)
+    portfolio_amount = models.FloatField()
 
 class Financials(models.Model):
     date =  models.DateTimeField(auto_now = True)

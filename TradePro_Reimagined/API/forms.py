@@ -138,9 +138,10 @@ class RiskAssessmentTest(forms.Form):
                             ,(4,"Stable")
                             ,(5,"Very stable")]))
 
-    question_nine = forms.CharField(label="What is the total amount of $ you are willing to invest?",required= True,
+    question_nine = forms.IntegerField(label="What is the total amount of $ you are willing to invest?",required= True,
         widget= forms.TextInput
         (attrs={'placeholder':'$ Amount'}))
+    
 
 class FinacialIndex(forms.Form):
     OPTIONS = (
