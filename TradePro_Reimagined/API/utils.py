@@ -137,14 +137,16 @@ def handle_specific_queryset(queryset, indice:str)->pd.DataFrame:
 
     return df
 
-def extract_stock_data(queryset, S_AND_P = False, NASDAQ = False, DJIA = False )->pd.DataFrame:
+def extract_mutual_fund_data(queryset, S_AND_P = False, NASDAQ = False, DJIA = False )->pd.DataFrame:
     """
-    Queries postgress and returns data for different stock indices.
-    Users can either choose S&P500 stocks, NASDAQ, DJIA. Or pick all three 
+    Queries postgress and returns data for different mutual funds.
+    Users can either choose Vanguard, Fidelity, or Schwab. Or pick all three 
     Or some combination of all three !
 
     returns dataframe
     """
+    pass
+
 
 
 def extract_stock_data(queryset, S_AND_P = False, NASDAQ = False, DJIA = False )->pd.DataFrame:

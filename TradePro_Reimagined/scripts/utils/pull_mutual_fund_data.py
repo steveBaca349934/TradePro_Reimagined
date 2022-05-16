@@ -51,7 +51,6 @@ def get_mutual_fund_data():
     BASE_DIR = str(BASE_DIR)
     # BASE_DIR locally is /Users/stevebaca/PycharmProjects/TradePro_Reimagined/TradePro_Reimagined/scripts 
 
-    # vanguard
     mutual_fund_tickers_file_path = BASE_DIR + "/utils/static_list_of_tickers/mutual_fund_tickers.xlsx"
     mf_tickers_df = pd.read_excel(mutual_fund_tickers_file_path)
 
