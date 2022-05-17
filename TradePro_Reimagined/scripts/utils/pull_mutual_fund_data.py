@@ -43,22 +43,49 @@ def handle_tickers_retrieve_data(tickers_list:list)->dict:
 def get_mutual_fund_data():
     """
     Read in excel files that have list of 
-    each companies most popular/best performing mutual funds
+    each companies most popular/best performing mutual funds 
+    ** Decided to just hardcode in the tickers **
 
     return data for each ticker
     """
-    BASE_DIR = Path(__file__).resolve().parent.parent
-    BASE_DIR = str(BASE_DIR)
-    # BASE_DIR locally is /Users/stevebaca/PycharmProjects/TradePro_Reimagined/TradePro_Reimagined/scripts 
+    vanguard_dict = handle_tickers_retrieve_data(
+        'VTAPX', 
+        'VGPMX',
+        'VHCIX',
+        'VITAX',
+        'VIPSX',
+        'VMCTX',
+        'VRGWX',
+        'VMGAX',
+        'VMSXX',
+        'VINIX'
+    )
 
-    mutual_fund_tickers_file_path = BASE_DIR + "/utils/static_list_of_tickers/mutual_fund_tickers.xlsx"
-    mf_tickers_df = pd.read_excel(mutual_fund_tickers_file_path)
+    fidelity_dict = handle_tickers_retrieve_data(
+        'FDCPX'
+        ,'FSIPX'
+        ,'FYHTX'
+        ,'FSHCX'
+        ,'FACVX'
+        ,'FWATX'
+        ,'FITLX'
+        ,'FFIDX'
+        ,'FLCEX'
+        ,'FLGEX'
+    )
 
-    vanguard_dict = handle_tickers_retrieve_data(mf_tickers_df['Vanguard_Ticker'].tolist())
-
-    fidelity_dict = handle_tickers_retrieve_data(mf_tickers_df['Fidelity_Ticker'].tolist())
-
-    schwab_dict = handle_tickers_retrieve_data(mf_tickers_df['Schwab_Ticker'].tolist())
+    schwab_dict = handle_tickers_retrieve_data(
+        'SWPPX'
+        ,'SWTSX'
+        ,'SNXFX'
+        ,'SWISX'
+        ,'SFLNX'
+        ,'SWSSX'
+        ,'SFSNX'
+        ,'SWMCX'
+        ,'SWLGX'
+        ,'SFREX'
+    )
 
 
     
