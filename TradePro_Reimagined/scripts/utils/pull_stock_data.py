@@ -68,7 +68,7 @@ def get_ticker_data(tickers:dict)->dict:
 
     Return a dataframe full of previous close data
     """
-    past_date = datetime.today() - timedelta(days=730)
+    past_date = datetime.today() - timedelta(days=1278)
     today = datetime.today()
 
     s_and_p_500_dict = dict()

@@ -244,27 +244,33 @@ class Portfolio(BaseView):
                     if mf in mf_res_dict:
                         mf_res_dict[mf] = True
 
-                tickers_df = utils.extract_stock_data(query_stock_data, S_AND_P = stocks_res_dict.get('S&P'), 
+                stock_tickers_df = utils.extract_stock_data(query_stock_data, S_AND_P = stocks_res_dict.get('S&P'), 
                                                       NASDAQ = stocks_res_dict.get('DJIA'), DJIA = stocks_res_dict.get('NASDAQ'))
 
+                stock_tickers_df.to_csv("check_if_cronjobs_working.csv")
 
+                mf_tickers_df = utils.extract_mf_data(query_mutual_fund_data, vanguard = mf_res_dict.get('Vanguard'),
+                                                      fidelity = mf_res_dict.get('Fidelity'),schwab = mf_res_dict.get('Schwab'))
+
+                res_tickers_df = stock_tickers_df.merge(mf_tickers_df, on="Date") 
+                                
                 # TODO: write an extract_mutual_fund_data function in utils
 
                 # get stock market data and build an optimal portfolio
                 # based off of the RAT score
 
-                # investment_vehicles_and_alloc:dict = utils.retrieve_optimal_portfolio(data, tickers ,self.dict['avg_of_scores'])
+                opt_portfolio_dict,investment_vehicles_and_alloc_dict, leftover_dollar_amount = utils.retrieve_optimal_portfolio_discrete_allocations(res_tickers_df, score, portfolio_amount)
 
-                # for company, allocations in investment_vehicles_and_alloc.items():
-                #     investment_vehicles_and_alloc[company] = round(allocations,3)
+                for company, allocations in investment_vehicles_and_alloc_dict.items():
+                    investment_vehicles_and_alloc_dict[company] = round(allocations,3)
 
+                self.dict['investment_vehicles_and_alloc'] = investment_vehicles_and_alloc_dict
 
-                # self.dict['investment_vehicles_and_alloc'] = investment_vehicles_and_alloc
-                print(f"\n the alledged portfolio amount is {portfolio_amount} \n \n ")
-
-                opt_portfolio_dict = utils.retrieve_optimal_portfolio_discrete_allocations(tickers_df, score, portfolio_amount)
+                # This is the discrete # of shares that should be invested in each asset
+                # according to the assets most recent prices
 
                 self.dict['discrete_investment_vehicles_and_alloc'] = opt_portfolio_dict
+                self.dict['leftover_amount'] = leftover_dollar_amount
 
 
                 return render(request, "home/portfolio.html",self.dict)

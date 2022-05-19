@@ -15,9 +15,7 @@ def run():
 
     res_dict = psd.scrape_stock_tickers()
 
-
     s_and_p_500_dict, nasdaq_dict, djia_dict = psd.get_ticker_data(res_dict)
-
 
     StockData.objects.all().delete()
 
@@ -36,8 +34,6 @@ def run():
     update_mutual_fund_data.save()
 
     print("\n \n \n complete complete complete ! The world is saved \n ")
-   
-
 
 if __name__ == '__main__':
     run()

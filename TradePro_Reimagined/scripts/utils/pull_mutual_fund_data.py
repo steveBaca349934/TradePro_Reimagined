@@ -18,7 +18,7 @@ def handle_tickers_retrieve_data(tickers_list:list)->dict:
     """
     return_dict = dict()
 
-    past_date = datetime.today() - timedelta(days=730)
+    past_date = datetime.today() - timedelta(days=1278)
     today = datetime.today()
 
     for ticker in tickers_list:
@@ -49,7 +49,7 @@ def get_mutual_fund_data():
     return data for each ticker
     """
     vanguard_dict = handle_tickers_retrieve_data(
-        'VTAPX', 
+       [ 'VTAPX', 
         'VGPMX',
         'VHCIX',
         'VITAX',
@@ -58,11 +58,11 @@ def get_mutual_fund_data():
         'VRGWX',
         'VMGAX',
         'VMSXX',
-        'VINIX'
+        'VINIX']
     )
 
     fidelity_dict = handle_tickers_retrieve_data(
-        'FDCPX'
+        ['FDCPX'
         ,'FSIPX'
         ,'FYHTX'
         ,'FSHCX'
@@ -71,11 +71,11 @@ def get_mutual_fund_data():
         ,'FITLX'
         ,'FFIDX'
         ,'FLCEX'
-        ,'FLGEX'
+        ,'FLGEX']
     )
 
     schwab_dict = handle_tickers_retrieve_data(
-        'SWPPX'
+        ['SWPPX'
         ,'SWTSX'
         ,'SNXFX'
         ,'SWISX'
@@ -84,7 +84,7 @@ def get_mutual_fund_data():
         ,'SFSNX'
         ,'SWMCX'
         ,'SWLGX'
-        ,'SFREX'
+        ,'SFREX']
     )
 
 

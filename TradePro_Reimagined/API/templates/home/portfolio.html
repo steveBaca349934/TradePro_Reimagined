@@ -34,14 +34,14 @@
         
 
 
-<!-- <div>
+<div>
 <ul id="port_alloc" class="header">
     {% for company, percentage in investment_vehicles_and_alloc.items%}
     <li>{{company}}, {{percentage}}</li>
 
     {% endfor %}
 </ul>
-</div> -->
+</div>
 
 </div >
 <ul id="port_dscrete_alloc" class="header">
@@ -50,6 +50,12 @@
 
     {% endfor %}
 </ul>
+</div>
+
+<div class="header">
+    {% if leftover_amount %}
+    You Have A Leftover $ Amount of {{leftover_amount}}. Invest In Crypto
+    {% endif %}
 </div>
 
 

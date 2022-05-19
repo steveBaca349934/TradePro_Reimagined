@@ -110,6 +110,12 @@ def handle_specific_queryset(queryset, indice:str)->pd.DataFrame:
         json_res = queryset[0].nasdaq
     elif indice == "djia":
         json_res = queryset[0].djia
+    elif indice == "vanguard":
+        json_res = queryset[0].vanguard
+    elif indice == "fidelity":
+        json_res = queryset[0].fidelity
+    elif indice == "schwab":
+        json_res = queryset[0].schwab
     
     dict_res = json.loads(json_res)
 
@@ -137,16 +143,41 @@ def handle_specific_queryset(queryset, indice:str)->pd.DataFrame:
 
     return df
 
-def extract_mutual_fund_data(queryset, S_AND_P = False, NASDAQ = False, DJIA = False )->pd.DataFrame:
+
+def extract_mf_data(queryset, vanguard = False, fidelity = False, schwab = False )->pd.DataFrame:
     """
-    Queries postgress and returns data for different mutual funds.
-    Users can either choose Vanguard, Fidelity, or Schwab. Or pick all three 
+    Queries postgress and returns data for different mf indices.
+    Users can either choose vanguard, fidelity or schwab. Or pick all three 
     Or some combination of all three !
 
     returns dataframe
     """
-    pass
+    df = pd.DataFrame()
+    
+    if vanguard:
 
+        vanguard_res_df = handle_specific_queryset(queryset, "vanguard")
+        if len(df) == 0: df = vanguard_res_df
+
+    if fidelity:
+
+        fidelity_res_df = handle_specific_queryset(queryset, "fidelity")
+        if len(df) == 0: df = fidelity_res_df
+        else: df = df.merge(fidelity_res_df, on = "Date", how="left")
+        
+    if schwab:
+
+        schwab_res_df = handle_specific_queryset(queryset, "schwab")
+        if len(df) == 0: df = schwab_res_df
+        else: df = df.merge(schwab_res_df, on = "Date", how="left")
+
+    # some final cleanup
+    for col in df.columns:
+        if '_' in col:
+            df.pop(col)
+
+    df.set_index('Date',inplace=True)
+    return df
 
 
 def extract_stock_data(queryset, S_AND_P = False, NASDAQ = False, DJIA = False )->pd.DataFrame:
@@ -238,69 +269,70 @@ def get_ticker_data(tickers:dict)->pd.DataFrame:
 
 
 
-def retrieve_optimal_portfolio(ticker_df:pd.DataFrame, tickers:dict, rat:int)->dict:
-    """
-    Given a risk assessment score, which is a measurement
-    of a client's risk tolerance
+# def retrieve_optimal_portfolio(ticker_df:pd.DataFrame, rat:int)->dict:
+#     """
+#     Given a risk assessment score, which is a measurement
+#     of a client's risk tolerance
 
-    return a dictionary of investment vehicle with percentages that their 
-    portfolio should allocate to each investment vehicle 
-    """
-    mean = expected_returns.mean_historical_return(ticker_df)
+#     return a dictionary of investment vehicle with percentages that their 
+#     portfolio should allocate to each investment vehicle 
+#     """
+#     # mean:pd.Series = expected_returns.mean_historical_return(ticker_df)
+#     mean = expected_returns.ema_historical_return(ticker_df)
 
-    #TODO: if the mean return of the stock has been negative over the past 
-    # 2 years, then there's no reason to keep it in the calculation
-    # so drop it...
-    # may need to reevaluate this later though
+#     # mean looks like this:
+#     #     	    expected annualized returns
+#     # MMM	    0.035043389
+#     # AOS	    0.19592809
+#     # ABT	    0.12048682
+#     # ABBV	    0.35758183
+#     # ABMD	    0.154056342
 
-    for index in mean.index:
-        
-        if mean[index] < 0:
+#     # continuously cutting off the bottom 25% of financial assets
+#     # till we get only 40 viable financial assets
+#     while len(mean) > 100:
+#         cut_off:int = np.percentile(mean, 10)
+#         # print(f"\n the current cut_off is {cut_off} \n")
+#         for index in mean.index:
+            
+#             if mean[index] < cut_off:
 
-            mean.drop(index, axis=0, inplace=True)
-            ticker_df.drop(index, axis=1, inplace=True)
+#                 mean.drop(index, axis=0, inplace=True)
+#                 ticker_df.drop(index, axis=1, inplace=True)
 
-    # try:
-    #     sample_covar_mat = risk_models.sample_cov(ticker_df)
-    # except Exception as e:
-    #     print("the res of sample cov is :\n ")
-    #     print(e)
+#     # try:
+#     #     sample_covar_mat = risk_models.sample_cov(ticker_df)
+#     # except Exception as e:
+#     #     print("the res of sample cov is :\n ")
+#     #     print(e)
 
-    try:
-        S = CovarianceShrinkage(ticker_df).ledoit_wolf()
-    except Exception as e:
-        print("the res of Cov Shrinkage is :\n ")
-        print(e)
+#     S = risk_models.sample_cov(ticker_df)
+#     # ticker_df.to_csv("output_before_error.csv", index=False)
+#     # S = CovarianceShrinkage(ticker_df).ledoit_wolf()
 
-    ef = EfficientFrontier(mean, S , weight_bounds=(0, 1))
+#     ef = EfficientFrontier(mean,S, weight_bounds=(0, 1))
+#     # the RAT score will be used to calculate 
+#     # the client's intended returns 
+#     # the higher the RAT, the higher the 
+#     # expected returns
+#     ef._max_return_value = copy.deepcopy(ef)._max_return()
 
-    # the RAT score will be used to calculate 
-    # the client's intended returns 
-    # the higher the RAT, the higher the 
-    # expected returns
+#     these_expected_returns = 0
+#     if rat * .1 > ef._max_return_value:
+#         these_expected_returns = ef._max_return_value
+
+#     elif rat * .1 < 0:
+#         #we need at least 5% returns to adjust for inflation
+#         these_expected_returns = .05
+
+#     else:
+#         these_expected_returns = rat * .1
+
+
+#     res_dict = ef.efficient_return(these_expected_returns)
+#     print(f"\n \n res_dict looks like {res_dict} \n \n")
     
-    ef._max_return_value = copy.deepcopy(ef)._max_return()
-
-    these_expected_returns = 0
-    if rat * .1 > ef._max_return_value:
-        these_expected_returns = ef._max_return_value
-
-    elif rat * .1 < 0:
-        #we need at least 5% returns to adjust for inflation
-        these_expected_returns = .05
-
-    else:
-        these_expected_returns = rat * .1
-
-
-    res = ef.efficient_return(these_expected_returns)
-    final_res = dict()
-
-    for ticker, alloc in res.items():
-        if alloc != 0.0:
-            final_res[tickers[ticker]] = alloc
-
-    return final_res
+#     return res_dict
 
 def retrieve_optimal_portfolio_discrete_allocations(ticker_df:pd.DataFrame, rat:int, portfolio_amount:float)->dict:
     """
@@ -310,19 +342,29 @@ def retrieve_optimal_portfolio_discrete_allocations(ticker_df:pd.DataFrame, rat:
     return a dictionary of investment vehicle with percentages that their 
     portfolio should allocate to each investment vehicle 
     """
+    # mean:pd.Series = expected_returns.mean_historical_return(ticker_df)
+    mean = expected_returns.ema_historical_return(ticker_df)
 
-    mean = expected_returns.mean_historical_return(ticker_df)
+    # mean looks like this:
+    #     	    expected annualized returns
+    # MMM	    0.035043389
+    # AOS	    0.19592809
+    # ABT	    0.12048682
+    # ABBV	    0.35758183
+    # ABMD	    0.154056342
 
     # continuously cutting off the bottom 25% of financial assets
     # till we get only 40 viable financial assets
-    while len(mean) > 40:
-        cut_off:int = np.percentile(mean, 25)
+    while len(mean) > 100:
+        cut_off:int = np.percentile(mean, 10)
+        # print(f"\n the current cut_off is {cut_off} \n")
         for index in mean.index:
             
-            if mean[index] <= cut_off:
+            if mean[index] < cut_off:
 
                 mean.drop(index, axis=0, inplace=True)
                 ticker_df.drop(index, axis=1, inplace=True)
+
 
     S = risk_models.sample_cov(ticker_df)
     # ticker_df.to_csv("output_before_error.csv", index=False)
@@ -346,7 +388,7 @@ def retrieve_optimal_portfolio_discrete_allocations(ticker_df:pd.DataFrame, rat:
     else:
         these_expected_returns = rat * .1
 
-    res = ef.efficient_return(these_expected_returns)
+    res_dict = ef.efficient_return(these_expected_returns)
     weights:dict = ef.clean_weights() #to clean the raw weights
 
     latest_prices = get_latest_prices(ticker_df)
@@ -355,13 +397,19 @@ def retrieve_optimal_portfolio_discrete_allocations(ticker_df:pd.DataFrame, rat:
 
     allocation, leftover = discrete_allocation.lp_portfolio()
 
-    # final_res = dict()
+    # clean up companies that are in the ordered dict
+    # that should not be in the ordered dict
+    companies_to_remove_list = []
+    for company, alloc in res_dict.items():
+        if company not in allocation:
+            companies_to_remove_list.append(company)
 
-    # for ticker, alloc in allocation.items():
-    #     final_res[tickers[ticker]] = alloc
+    for company in companies_to_remove_list:
+        res_dict.pop(company)
+           
+    
 
-    # return final_res
-    return allocation
+    return allocation,res_dict, leftover
 
 
 if __name__ == '__main__':
