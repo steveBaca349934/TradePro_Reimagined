@@ -15,6 +15,7 @@
     
     </form>
 
+
     <!-- <form class="header" action="{% url 'portfolio' %}" method="post">
         {% csrf_token %}
         <input type="submit">
@@ -33,7 +34,7 @@
         
 
 
-<!-- <div>
+<div>
 <ul id="port_alloc" class="header">
     {% for company, percentage in investment_vehicles_and_alloc.items%}
     <li>{{company}}, {{percentage}}</li>
@@ -49,7 +50,13 @@
 
     {% endfor %}
 </ul>
-</div> -->
+</div>
+
+<div class="header">
+    {% if leftover_amount %}
+    You Have A Leftover $ Amount of {{leftover_amount}}. Invest In Crypto
+    {% endif %}
+</div>
 
 
 

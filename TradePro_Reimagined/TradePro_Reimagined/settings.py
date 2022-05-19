@@ -199,5 +199,5 @@ from API.cdn.conf import *
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 CRONJOBS = [
-    ('0 5 * * MON-FRI', 'API.scripts.main')
+    ('0 5 * * MON-FRI', 'scripts.main.run')
 ]
