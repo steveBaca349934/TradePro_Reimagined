@@ -182,8 +182,6 @@ class Portfolio(BaseView):
 
         super(Portfolio, self).get(request)
 
-        self.dict['post_form'] = True
-
         query_risk_assessment_score = models.RiskAssessmentScore.objects.filter(user=request.user)
 
         if len(query_risk_assessment_score) > 0:
@@ -249,78 +247,31 @@ class Portfolio(BaseView):
                 stock_tickers_df = utils.extract_stock_data(query_stock_data, S_AND_P = stocks_res_dict.get('S&P'), 
                                                       NASDAQ = stocks_res_dict.get('DJIA'), DJIA = stocks_res_dict.get('NASDAQ'))
 
+                stock_tickers_df.to_csv("check_if_cronjobs_working.csv")
 
                 mf_tickers_df = utils.extract_mf_data(query_mutual_fund_data, vanguard = mf_res_dict.get('Vanguard'),
                                                       fidelity = mf_res_dict.get('Fidelity'),schwab = mf_res_dict.get('Schwab'))
 
-                # Based on the RAT Score, these are the different blends of 
-                # the overall portfolio
-                stock_breakdown, mf_breakdown, crypto_breakdown = 0.0,0.0,0.0
-                if score <= 1:
-                    stock_breakdown = 0.2
-                    mf_breakdown = 0.8
-                    crypto_breakdown = 0.0
-                elif score > 1 and score <= 2:
-                    stock_breakdown = 0.3
-                    mf_breakdown = 0.7
-                    crypto_breakdown = 0.0
-                elif score > 2 and score <= 3:
-                    stock_breakdown = 0.4
-                    mf_breakdown = 0.6
-                    crypto_breakdown = 0.0
-                elif score > 3 and score <= 4:
-                    stock_breakdown = 0.5
-                    mf_breakdown = 0.4
-                    crypto_breakdown = 0.1
-                elif score > 4 and score <= 5:
-                    stock_breakdown = 0.6
-                    mf_breakdown = 0.2
-                    crypto_breakdown = 0.2
-                
+                res_tickers_df = stock_tickers_df.merge(mf_tickers_df, on="Date") 
+                                
+                # TODO: write an extract_mutual_fund_data function in utils
 
                 # get stock market data and build an optimal portfolio
                 # based off of the RAT score
 
-                stock_port_amount = stock_breakdown * portfolio_amount
-                mf_port_amount = mf_breakdown * portfolio_amount
-                crypto_port_amount = crypto_breakdown * portfolio_amount
+                opt_portfolio_dict,investment_vehicles_and_alloc_dict, leftover_dollar_amount = utils.retrieve_optimal_portfolio_discrete_allocations(res_tickers_df, score, portfolio_amount)
 
-                # First Calculate the stocks portion
-                stock_opt_portfolio_dict,stock_investment_vehicles_and_alloc_dict, leftover_dollar_amount = utils.retrieve_optimal_portfolio_discrete_allocations(stock_tickers_df, score, stock_port_amount)
+                for company, allocations in investment_vehicles_and_alloc_dict.items():
+                    investment_vehicles_and_alloc_dict[company] = round(allocations,3)
 
-                for company, allocations in stock_investment_vehicles_and_alloc_dict.items():
-                    stock_investment_vehicles_and_alloc_dict[company] = round(allocations,3)
-
-                self.dict['stock_investment_vehicles_and_alloc'] = stock_investment_vehicles_and_alloc_dict
+                self.dict['investment_vehicles_and_alloc'] = investment_vehicles_and_alloc_dict
 
                 # This is the discrete # of shares that should be invested in each asset
                 # according to the assets most recent prices
-                self.dict['discrete_stock_investment_vehicles_and_alloc'] = stock_opt_portfolio_dict
 
-                self.dict['total_stock_amount_in_dollars'] = stock_port_amount
+                self.dict['discrete_investment_vehicles_and_alloc'] = opt_portfolio_dict
+                self.dict['leftover_amount'] = leftover_dollar_amount
 
-
-                # Then Calculate the mutual fund portion
-                mf_opt_portfolio_dict,mf_investment_vehicles_and_alloc_dict, leftover_dollar_amount = utils.retrieve_optimal_portfolio_discrete_allocations(mf_tickers_df, score, mf_port_amount)
-
-                for company, allocations in mf_investment_vehicles_and_alloc_dict.items():
-                    mf_investment_vehicles_and_alloc_dict[company] = round(allocations,3)
-
-                self.dict['mf_investment_vehicles_and_alloc'] = mf_investment_vehicles_and_alloc_dict
-
-                # This is the discrete # of shares that should be invested in each asset
-                # according to the assets most recent prices
-                self.dict['discrete_mf_investment_vehicles_and_alloc'] = mf_opt_portfolio_dict
-
-                self.dict['total_mf_amount_in_dollars'] = mf_port_amount
-
-
-                # Finally Calculate the crypto portion
-                
-
-                # Indicate to the html logic that the "Django Post"
-                # Form is no longer needed
-                self.dict['post_form'] = False
 
                 return render(request, "home/portfolio.html",self.dict)
 
@@ -336,20 +287,6 @@ class Portfolio(BaseView):
 
         #TODO: obviously going to need to change this
         return HttpResponseRedirect(reverse('risk_assessment_test'))
-
-class PortfolioHistoricalReturns(Portfolio):
-    def get(self, request):
-
-        super(Profile, self).get(request)
-
-        return render(request, "home/portfolio_historical_returns.html",self.dict)
-
-    def post(self, request):
-
-        super(Portfolio, self).post(request)
-
-        return render(request, "home/portfolio_historical_returns.html",self.dict)
-
 
 class Profile(BaseView):
 
