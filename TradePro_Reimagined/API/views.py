@@ -337,18 +337,6 @@ class Portfolio(BaseView):
         #TODO: obviously going to need to change this
         return HttpResponseRedirect(reverse('risk_assessment_test'))
 
-class PortfolioHistoricalReturns(Portfolio):
-    def get(self, request):
-
-        super(Profile, self).get(request)
-
-        return render(request, "home/portfolio_historical_returns.html",self.dict)
-
-    def post(self, request):
-
-        super(Portfolio, self).post(request)
-
-        return render(request, "home/portfolio_historical_returns.html",self.dict)
 
 
 class Profile(BaseView):
