@@ -63,6 +63,13 @@
     overflow: auto;
 
 }
+.port_header_link {
+
+    display: flex;
+    margin-right: 20px;
+    max-width: 100%;
+
+}
 
 #main_body {
     background-color: black;
@@ -103,6 +110,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-right: 20px;
+}
+
+#portfolio_bar {
+    display: flex;
+    align-items: center;
+    /* justify-content: center; */
     margin-right: 20px;
 }
 
