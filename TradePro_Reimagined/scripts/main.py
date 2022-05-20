@@ -1,6 +1,10 @@
 import json
 
+<<<<<<< HEAD
 from API.models import StockData, MutualFundData, BenchMarkStockData
+=======
+from API.models import StockData, MutualFundData
+>>>>>>> origin/master
 from scripts.utils import pull_mutual_fund_data as pmfd
 from scripts.utils import pull_stock_data as psd
 from scripts.utils import pull_benchmark_s_and_p_data as pbm
