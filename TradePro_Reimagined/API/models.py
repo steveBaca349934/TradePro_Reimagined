@@ -24,6 +24,13 @@ class StockData(models.Model):
     nasdaq = models.JSONField()
     djia = models.JSONField()
 
+class BenchMarkStockData(models.Model):
+    date =  models.DateTimeField(auto_now = True)
+    # this actually contains benchmark s_and_p data 
+    s_and_p_500_benchmark = models.JSONField()
+
+
+
 class MutualFundData(models.Model):
     date =  models.DateTimeField(auto_now = True)
     vanguard = models.JSONField()
