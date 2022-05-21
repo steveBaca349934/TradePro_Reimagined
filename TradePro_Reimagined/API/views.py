@@ -322,6 +322,30 @@ class Portfolio(BaseView):
                 # Form is no longer needed
                 self.dict['post_form'] = False
 
+
+                query_port = models.Portfolio.objects.filter(user=request.user)
+
+                # if the user has an object in the DB
+                # then we need to delete the current entry for it 
+                # and resave the new portfolio
+                if len(query_port) > 0:
+
+                    # Final Step is to save portfolio to the database
+                    models.Portfolio.objects.filter(user = request.user).delete()
+
+                update_port = models.Portfolio.objects.create(user = request.user
+                                                            ,stock_discrete_port=json.dumps(stock_opt_portfolio_dict)
+                                                            ,stock_port=json.dumps(stock_investment_vehicles_and_alloc_dict)
+                                                            ,mf_discrete_port=json.dumps(mf_opt_portfolio_dict)
+                                                            ,mf_port=json.dumps(mf_investment_vehicles_and_alloc_dict)
+                                                            ,crypto_discrete_port=json.dumps({})
+                                                            ,crypto_port=json.dumps({}))
+
+
+                update_port.save()
+
+
+
                 return render(request, "home/portfolio.html",self.dict)
 
             else:

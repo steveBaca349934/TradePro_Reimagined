@@ -13,21 +13,20 @@ import json
 
 from API.views import Portfolio
 
-login_form = forms.LoginForm()
-account_creation_form = forms.AccountCreationForm()
-change_pdub = forms.ChangePDub()
-recovery_questions_form = forms.RecoveryQuestions()
-recover_account_form = forms.RecoverAccountForm()
-rat_form = forms.RiskAssessmentTest()
-financial_form = forms.FinacialIndex()
-mutual_fund_form = forms.MutualFundProviders()
-
-
 class PortfolioHistoricalReturns(Portfolio):
 
     def get(self, request):
 
         super(Portfolio, self).get(request)
+        super(Portfolio, self).post(request)
+
+
+        query_benchmark_data = models.BenchMarkStockData.objects.all()
+
+        s_and_p_benchmark_df = utils.retrieve_and_clean_benchmark_data(query_benchmark_data)
+
+        s_and_p_benchmark_with_returns_df = utils.calculate_percentage_returns_for_benchmark(s_and_p_benchmark_df)
+
 
         return render(request, "home/portfolio_historical_returns.html",self.dict)
 

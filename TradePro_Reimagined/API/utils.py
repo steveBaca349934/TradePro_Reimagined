@@ -412,6 +412,49 @@ def retrieve_optimal_portfolio_discrete_allocations(ticker_df:pd.DataFrame, rat:
     return allocation,res_dict, leftover
 
 
+def retrieve_and_clean_benchmark_data(query_set)->pd.DataFrame:
+    """
+    Given that we query the bench mark data
+    Then we want to make it nice and neat and in a format
+    That is easy to visualize in the webapp
+    
+    returns DataFrame
+    """
+    json_res = query_set[0].s_and_p_500_benchmark
+
+    dict_res = json.loads(json_res)
+
+    dates_list = dict_res.get('dates')
+    ticker_list = dict_res.get('ticker')
+
+    data_dict = dict(zip(dates_list, ticker_list))
+    # # print(f" for ticker {ticker}, the data is \n {data_dict} \n")
+
+    return pd.DataFrame(data_dict.items(), columns=['Date',"s_and_p_benchmark"])
+
+
+def calculate_percentage_returns_for_benchmark(s_and_p_benchmark_df)->pd.DataFrame:
+    """
+    Given a dataframe that contains benchmark data 
+    for the S&P500. Calculate the historical returns 
+    for all periods using the simple formula 
+    (new-old)/old. In order to compare benchmark to generated 
+    portfolio.
+    
+    Returns DataFrame
+    """
+    s_and_p_benchmark_df['Daily_Returns'] = 0.0
+    for i in range(1,len(s_and_p_benchmark_df)):
+
+        s_and_p_benchmark_df.at[i,'Daily_Returns'] = (s_and_p_benchmark_df.at[i,'s_and_p_benchmark']
+                                                  - s_and_p_benchmark_df.at[i-1,'s_and_p_benchmark'])/s_and_p_benchmark_df.at[i-1,'s_and_p_benchmark']
+    
+    
+    return s_and_p_benchmark_df
+
+    
+
+
 if __name__ == '__main__':
     df = pd.read_csv("/Users/stevebaca/PycharmProjects/TradePro_Reimagined/TradePro_Reimagined/sample_data_for_development.csv")
     print(df.head())

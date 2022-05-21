@@ -29,13 +29,30 @@ class BenchMarkStockData(models.Model):
     # this actually contains benchmark s_and_p data 
     s_and_p_500_benchmark = models.JSONField()
 
-
-
 class MutualFundData(models.Model):
     date =  models.DateTimeField(auto_now = True)
     vanguard = models.JSONField()
     fidelity = models.JSONField()
     schwab = models.JSONField()
+
+
+class Portfolio(models.Model):
+    user = models.OneToOneField(User, null = True, on_delete = models.SET_NULL)
+    # stock_discrete_port is going to be the actual # of shares bought for 
+    # each company
+    stock_discrete_port = models.JSONField()
+    # stock port is the percentage allocated to the individual stock
+    stock_port = models.JSONField()
+    # mf_discrete_port is going to be the actual # of shares bought for 
+    # each mf
+    mf_discrete_port = models.JSONField()
+    # mf port is the percentage allocated to the individual mf
+    mf_port = models.JSONField()
+    # crypto_discrete_port is going to be the actual # of shares bought for 
+    # each mf
+    crypto_discrete_port = models.JSONField()
+    # crypto port is the percentage allocated to the individual mf
+    crypto_port = models.JSONField()
 
 
 
