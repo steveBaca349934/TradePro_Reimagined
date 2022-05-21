@@ -50,9 +50,9 @@ class Portfolio(models.Model):
     mf_port = models.JSONField()
     # crypto_discrete_port is going to be the actual # of shares bought for 
     # each mf
-    crypto_discrete_port = models.JSONField()
+    crypto_discrete_port = models.JSONField(null=True)
     # crypto port is the percentage allocated to the individual mf
-    crypto_port = models.JSONField()
+    crypto_port = models.JSONField(null=True)
 
 
 

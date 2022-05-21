@@ -333,13 +333,13 @@ class Portfolio(BaseView):
                     # Final Step is to save portfolio to the database
                     models.Portfolio.objects.filter(user = request.user).delete()
 
+
                 update_port = models.Portfolio.objects.create(user = request.user
-                                                            ,stock_discrete_port=json.dumps(stock_opt_portfolio_dict)
-                                                            ,stock_port=json.dumps(stock_investment_vehicles_and_alloc_dict)
-                                                            ,mf_discrete_port=json.dumps(mf_opt_portfolio_dict)
-                                                            ,mf_port=json.dumps(mf_investment_vehicles_and_alloc_dict)
-                                                            ,crypto_discrete_port=json.dumps({})
-                                                            ,crypto_port=json.dumps({}))
+                                                            ,stock_discrete_port=json.dumps(stock_opt_portfolio_dict, default=utils.myconverter)
+                                                            ,stock_port=json.dumps(dict(stock_investment_vehicles_and_alloc_dict), default=utils.myconverter)
+                                                            ,mf_discrete_port=json.dumps(mf_opt_portfolio_dict, default=utils.myconverter)
+                                                            ,mf_port=json.dumps(dict(mf_investment_vehicles_and_alloc_dict), default=utils.myconverter)
+                                                            )
 
 
                 update_port.save()
