@@ -80,7 +80,7 @@ def check_specific_column(intermediate_df:pd.DataFrame)->bool:
     if len(intermediate_df) == 0:
         return False
 
-    past_date = datetime.today() - timedelta(days=730)
+    past_date = datetime.today() - timedelta(days=1278)
     past_date_year = past_date.year
 
 
@@ -229,7 +229,7 @@ def get_ticker_data(tickers:dict)->pd.DataFrame:
     # using google as then standard because I know that it does
     # have a full 2 years
 
-    past_date = datetime.today() - timedelta(days=730)
+    past_date = datetime.today() - timedelta(days=1278)
     today = datetime.today()
 
     # max_l = len(data.DataReader("GOOGL", start=past_date, end=today, data_source='yahoo')['Adj Close'])
@@ -443,27 +443,213 @@ def calculate_percentage_returns_for_benchmark(s_and_p_benchmark_df)->pd.DataFra
     
     Returns DataFrame
     """
-    s_and_p_benchmark_df['Daily_Returns'] = 0.0
+    new_df = pd.DataFrame()
+
+    new_df['Date'] = s_and_p_benchmark_df['Date']
+    new_df['s_and_p_benchmark'] = 0.0
     for i in range(1,len(s_and_p_benchmark_df)):
 
-        s_and_p_benchmark_df.at[i,'Daily_Returns'] = (s_and_p_benchmark_df.at[i,'s_and_p_benchmark']
+        new_df.at[i,'s_and_p_benchmark'] = (s_and_p_benchmark_df.at[i,'s_and_p_benchmark']
                                                   - s_and_p_benchmark_df.at[i-1,'s_and_p_benchmark'])/s_and_p_benchmark_df.at[i-1,'s_and_p_benchmark']
     
     
-    return s_and_p_benchmark_df
+    return new_df
 
 
 def myconverter(obj):
-        if isinstance(obj, np.integer):
-            return int(obj)
-        elif isinstance(obj, np.floating):
-            return float(obj)
-        elif isinstance(obj, np.ndarray):
-            return obj.tolist()
-        elif isinstance(obj, datetime.datetime):
-            return obj.__str__()
+
+
+    if isinstance(obj, np.integer):
+        return int(obj)
+    elif isinstance(obj, np.floating):
+        return float(obj)
+    elif isinstance(obj, np.ndarray):
+        return obj.tolist()
+    elif isinstance(obj, datetime.datetime):
+        return obj.__str__()
+
+
+def extract_historical_data_for_specific_stock_tickers(ticker_dict, queryset)->pd.DataFrame:
+    """
+    Given a list of tickers, extract historical data for them.
+    Place said historical data in a DataFrame
+    
+    returns DataFrame
+    """
+    df = pd.DataFrame()
+    s_and_p_json_res = queryset[0].s_and_p_500
+    nasdaq_json_res = queryset[0].nasdaq
+    djia_json_res = queryset[0].djia
+
+    s_and_p_dict_res = json.loads(s_and_p_json_res)
+    nasdaq_dict_res = json.loads(nasdaq_json_res)
+    djia_dict_res = json.loads(djia_json_res)
+
+    all_stock_dict = {**s_and_p_dict_res, **nasdaq_dict_res, **djia_dict_res}
+
+    index = 0
+    for ticker in all_stock_dict:
+        if ticker in ticker_dict:
+            dates_list = all_stock_dict.get(ticker).get('dates')
+            ticker_list = all_stock_dict.get(ticker).get('ticker')
+
+            data_dict = dict(zip(dates_list, ticker_list))
+
+            intermediate_df = pd.DataFrame(data_dict.items(), columns=['Date',ticker])
+
+            if index == 0:
+                df = intermediate_df
+
+            else:
+                df = df.merge(intermediate_df, on= "Date", how="left")
+
+            index += 1
+
+    return df
+
+
+def extract_historical_data_for_specific_mf_tickers(ticker_dict, queryset)->pd.DataFrame:
+    """
+    Given a list of tickers, extract historical data for them.
+    Place said historical data in a DataFrame
+    
+    returns DataFrame
+    """
+    df = pd.DataFrame()
+    vanguard_json_res = queryset[0].vanguard
+    fidelity_json_res = queryset[0].fidelity
+    schwab_json_res = queryset[0].schwab
+
+    vanguard_dict_res = json.loads(vanguard_json_res)
+    fidelity_dict_res = json.loads(fidelity_json_res)
+    schwab_dict_res = json.loads(schwab_json_res)
+
+    all_stock_dict = {**vanguard_dict_res, **fidelity_dict_res, **schwab_dict_res}
+
+    index = 0
+    for ticker in all_stock_dict:
+        if ticker in ticker_dict:
+            dates_list = all_stock_dict.get(ticker).get('dates')
+            ticker_list = all_stock_dict.get(ticker).get('ticker')
+
+            data_dict = dict(zip(dates_list, ticker_list))
+
+            intermediate_df = pd.DataFrame(data_dict.items(), columns=['Date',ticker])
+
+            if index == 0:
+                df = intermediate_df
+
+            else:
+                df = df.merge(intermediate_df, on= "Date", how="left")
+
+            index += 1
+
+    return df
+
+
+def calculate_percentage_returns_for_df(df)->pd.DataFrame:
+    """
+    Given a dataframe that is filled with daily stock prices
+    Calculate the percentage difference for each day (new-old)/old.
+    
+    returns DataFrame
+    """
+    new_df = pd.DataFrame()
+
+    for col in df.columns:
+        if col != 'Date':
+            new_df[col] = 0.0
+            for i in range(1,len(df)):
+
+                if df.at[i-1,col] == 0.0:
+                    new_df.at[i,col] = 0.0
+                else:
+                    new_df.at[i,col] = ((df.at[i,col] - df.at[i-1,col])
+                                                /df.at[i-1,col])
+
+
+        else:
+            # add the date column to the new dataframe
+            new_df['Date'] = df[col]
+
+    return new_df
+
+
+def calculate_weighted_percentage_returns(port_dict,percentage_returns_df,breakdown)->pd.DataFrame:
+    """
+    Given the different weights of each asset for a portfolio
+    Calculate the weighted returns of each asset
+    Finally calculate the weighted sum of each asset
+    
+    return DataFrame with two columns (1 Date, 2 Sum of Weighted Returns)
+    """
+    final_df = pd.DataFrame()
+    final_df['Date'] = percentage_returns_df['Date']
+    for col in percentage_returns_df.columns:
+        if col != 'Date':
+            # weight * returns
+            final_df[col] = port_dict.get(col) * percentage_returns_df[col]
+
+    final_df.set_index('Date', inplace=True)
+    final_df['Sum_Weighted_Returns'] = final_df.sum(axis=1)
+
+    final_df['Sum_Weighted_Returns'] = final_df['Sum_Weighted_Returns'] * breakdown
+
+            
+    final_df.reset_index(inplace=True)
+
+    return final_df
     
 
+def calculate_dollar_returns(portfolio_amount, final_df)->pd.DataFrame:
+    """
+    Given the overall portfolio amount
+    Calculate the total returns for each day
+
+    returns DataFrame
+    """
+    final_df['Dollar_Portfolio_Returns'] = 0.0
+    final_df['Dollar_Benchmark_Returns'] = 0.0
+    final_df.at[0, 'Dollar_Portfolio_Returns'] = portfolio_amount
+    final_df.at[0, 'Dollar_Benchmark_Returns'] = portfolio_amount
+    for col in ('Dollar_Portfolio_Returns', 'Dollar_Benchmark_Returns'):
+        for i in range(1, len(final_df)):
+            if col == 'Dollar_Portfolio_Returns':
+
+                # calculation is (some decimal * principle amount from previous step)
+                # + principle amount from previous step
+                final_df.at[i,col] = ((final_df.at[i,'Portfolio_Returns'] * final_df.at[i-1,col])
+                                    + final_df.at[i-1,col])
+            else:
+
+                # calculation is (some decimal * principle amount from previous step)
+                # + principle amount from previous step
+                final_df.at[i,col] = ((final_df.at[i,'BenchMark_Returns'] * final_df.at[i-1,col])
+                                    + final_df.at[i-1,col])
+
+    return final_df
+
+def prepare_for_jsonify_portfolio_data(df, col_name)->list:
+    """
+    Given a dataframe, we want to turn the colums 
+    into "dictionary pairs" of data like this:
+    {data:[{pair1:value1,pair2:value2,pair3:value3}]} so that we 
+    can successfully pass the data to our javascript file and 
+    visualize the results
+    
+    returns dictionary
+    """
+    data_list = list()
+
+    for index, row in df.iterrows():
+        intermediate_dict = dict()
+        intermediate_dict[str(row['Date'])]=row[col_name]
+        data_list.append(intermediate_dict)
+
+
+    return data_list
+
+    
 
 if __name__ == '__main__':
     df = pd.read_csv("/Users/stevebaca/PycharmProjects/TradePro_Reimagined/TradePro_Reimagined/sample_data_for_development.csv")

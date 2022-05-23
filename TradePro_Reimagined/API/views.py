@@ -339,6 +339,9 @@ class Portfolio(BaseView):
                                                             ,stock_port=json.dumps(dict(stock_investment_vehicles_and_alloc_dict), default=utils.myconverter)
                                                             ,mf_discrete_port=json.dumps(mf_opt_portfolio_dict, default=utils.myconverter)
                                                             ,mf_port=json.dumps(dict(mf_investment_vehicles_and_alloc_dict), default=utils.myconverter)
+                                                            ,stock_breakdown = stock_breakdown
+                                                            ,mf_breakdown = mf_breakdown
+                                                            ,crypto_breakdown = crypto_breakdown
                                                             )
 
 

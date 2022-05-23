@@ -54,5 +54,9 @@ class Portfolio(models.Model):
     # crypto port is the percentage allocated to the individual mf
     crypto_port = models.JSONField(null=True)
 
+    stock_breakdown = models.FloatField(null=True)
+    mf_breakdown = models.FloatField(null=True)
+    crypto_breakdown = models.FloatField(null=True)
+
 
 

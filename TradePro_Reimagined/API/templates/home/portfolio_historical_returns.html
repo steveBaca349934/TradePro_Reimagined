@@ -3,7 +3,27 @@
 {% block body %}
 
 
+<script>
+    var json_dictionary_port_returns = '{{Portfolio_Returns|safe }}';
+    var json_dictionary_benchmark_returns = '{{BenchMark_Returns|safe }}';
 
+
+
+
+    window.onload = function () {
+    
+        show_chart(json_dictionary_port_returns, json_dictionary_benchmark_returns);
+    
+    }
+    </script>
+    </head>
+    <body>
+    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script defer src= "{% static 'home/scripts/chart.js' %}">
+            
+    </script>
+    </body>
 
 
 {% endblock %}
