@@ -1,42 +1,77 @@
 {% extends "home/layout.html" %}
 {% load static %}
 {% block body %}
+
+
+<!-- If the user has not submitted the post form yet
+then we don't present them with the drop down list to see
+historical returns (for example) -->
+{% if post_form %}    
 <h1 class="header">
     Portfolio
 </h1>
+
+<form class="header" action="{% url 'portfolio' %}" method="post">
+    {% csrf_token %}
+    {{financial_form.as_p}}
+
+    {{mutual_fund_form.as_p}}
+
+    <input type="submit">
+
+</form>
+
+<!-- Once the user has submitted the post form
+then we can present them with the option to see 
+specific options that they can do with the portfolio
+which include seeing historical returns vs benchmark data -->
+{% else %}
+<div id="portfolio_bar">
+
+<li class="port_header_link">
+<h1 class="header">
+    Portfolio
+</h1>
+</li>
+
+<li class="port_header_link">
+<div class="dropdown" id="profile-button">
+  
+    <!-- Beginning of Profile Button -->
+    <button class="btn btn-secondary dropdown-toggle" type="button"
+        id="profileMenu" data-bs-toggle="dropdown"
+        aria-expanded="false">
+        Portfolio Options
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+        <li><a class="dropdown-item" href="{% url 'portfolio/historical_returns' %}">Historical Returns</a></li>
+        <!-- <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li> -->
+
+        <!-- Trying to integrate javascript for MetaMask purposes -->
+        <!-- <li><a class="dropdown-item" href="{% url 'web3_home' %}">Enter Web3</a></li> -->
     
-    <form class="header" action="{% url 'portfolio' %}" method="post">
-        {% csrf_token %}
-        {{financial_form.as_p}}
-
-        {{mutual_fund_form.as_p}}
-
-        <input type="submit">
+        <!-- <li><a class="dropdown-item" onclick="integrate_metamask()">Enter Web3</a></li> -->
     
-    </form>
+    </ul>
+    <!-- End of Profile Button -->
 
+</div>
+</li>
+</div>
 
-    <!-- <form class="header" action="{% url 'portfolio' %}" method="post">
-        {% csrf_token %}
-        <input type="submit">
-    
-    </form> -->
-
-
-
- 
-    <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" ></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" ></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.js"></script>
-    <script defer type="text/javascript" src= "{% static 'home/scripts/indices.js' %}"> -->
+{% endif %}    
 
         
 
+<div class="header">
+{% if total_stock_amount_in_dollars %}
+The total amount invested in stocks is {{total_stock_amount_in_dollars}}
+{% endif %}
+</div>
 
 <div>
 <ul id="port_alloc" class="header">
-    {% for company, percentage in investment_vehicles_and_alloc.items%}
+    {% for company, percentage in stock_investment_vehicles_and_alloc.items%}
     <li>{{company}}, {{percentage}}</li>
 
     {% endfor %}
@@ -45,19 +80,37 @@
 
 </div >
 <ul id="port_dscrete_alloc" class="header">
-    {% for company, num_stocks in discrete_investment_vehicles_and_alloc.items%}
+    {% for company, num_stocks in discrete_stock_investment_vehicles_and_alloc.items%}
     <li>{{company}}, {{num_stocks}}</li>
 
     {% endfor %}
 </ul>
 </div>
 
-<div class="header">
-    {% if leftover_amount %}
-    You Have A Leftover $ Amount of {{leftover_amount}}. Invest In Crypto
+<div class="header" >
+    {% if total_mf_amount_in_dollars %}
+    The total amount invested in mf is {{total_mf_amount_in_dollars}}
     {% endif %}
+
 </div>
 
+<div>
+    <ul id="port_alloc" class="header">
+        {% for company, percentage in mf_investment_vehicles_and_alloc.items%}
+        <li>{{company}}, {{percentage}}</li>
+    
+        {% endfor %}
+    </ul>
+    </div>
+    
+    </div >
+    <ul id="port_dscrete_alloc" class="header">
+        {% for company, num_stocks in discrete_mf_investment_vehicles_and_alloc.items%}
+        <li>{{company}}, {{num_stocks}}</li>
+    
+        {% endfor %}
+    </ul>
+    </div>
 
 
 {% endblock %}
