@@ -643,7 +643,8 @@ def prepare_for_jsonify_portfolio_data(df, col_name)->list:
 
     for index, row in df.iterrows():
         intermediate_dict = dict()
-        intermediate_dict[str(row['Date'])]=row[col_name]
+        intermediate_dict['x']=str(row['Date'])
+        intermediate_dict['y']=row[col_name]
         data_list.append(intermediate_dict)
 
 
