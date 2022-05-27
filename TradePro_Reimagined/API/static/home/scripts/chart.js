@@ -1,28 +1,15 @@
+/**
+ * This function takes a dictionary
+ * and cleans up its Dates to make it ready to 
+ * be visualized
+ * @param {*} dictionary_inside_array 
+ * @returns an array with cleaned json inside
+ */
 function clean_dates_in_dictionary(dictionary_inside_array){
-
-    // iterate through the dictionary contained in the array
-    // for (var i = 0; i < dictionary_inside_array.length; i++){
-
-    //     cur_d = dictionary_inside_array[i];
-    //     console.log(i);
-    //     console.log(cur_d);
-
-    // }
-    // dictionary_inside_array.forEach(myFunction);
-    // console.log("\n \n \n \n the type of dictionary inside array is ")
-    // For whatever reason javascript currently thinks that the 
-    // dictionary_inside_array is a type string
+    
     cleaned_dictionary_inside_array = JSON.parse(dictionary_inside_array);
 
-    // console.log("\n \n \n \n the type of dictionary inside array after cleaning is: ")
-    // console.log(typeof cleaned_dictionary_inside_array);
-
-    // for (var i = 0; i < cleaned_dictionary_inside_array.length; i++){
-    //     var cur = cleaned_dictionary_inside_array[i];
-
-    //     console.log(i);
-    //     console.log(cur);
-    // }
+    
     var new_arr = new Array();
 
     for (var i = 0; i < cleaned_dictionary_inside_array.length; i++){
@@ -37,6 +24,11 @@ function clean_dates_in_dictionary(dictionary_inside_array){
     return new_arr;
 }
 
+/**
+ * Takes the arrays portfolio returns and benchmark returns
+ * visualizes them with chart.js
+ * 
+ */
 function show_chart(json_dictionary_port_returns, json_dictionary_benchmark_returns) {
     // console.log(json_dictionary_port_returns);
     // console.log(json_dictionary_benchmark_returns);
