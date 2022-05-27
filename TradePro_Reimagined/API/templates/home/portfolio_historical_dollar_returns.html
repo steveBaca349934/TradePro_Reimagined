@@ -4,14 +4,16 @@
 
 
 <script>
-    var json_dictionary_port_returns = '{{Portfolio_Returns|safe }}';
-    var json_dictionary_benchmark_returns = '{{BenchMark_Returns|safe }}';
+
+    var json_dictionary_dollar_port_returns = '{{Dollar_Portfolio_Returns|safe }}';
+    var json_dictionary_dollar_benchmark_returns = '{{Dollar_BenchMark_Returns|safe }}';
+
 
 
 
     window.onload = function () {
     
-        show_chart(json_dictionary_port_returns, json_dictionary_benchmark_returns);
+        show_chart(json_dictionary_dollar_port_returns, json_dictionary_dollar_benchmark_returns);
 
     
     }
