@@ -3,6 +3,8 @@
 {% block body %}
 
 
+
+
 <!-- If the user has not submitted the post form yet
 then we don't present them with the drop down list to see
 historical returns (for example) -->
@@ -37,7 +39,7 @@ which include seeing historical returns vs benchmark data -->
 <li class="port_header_link">
 <div class="dropdown" id="profile-button">
   
-    <!-- Beginning of Profile Button -->
+    <!-- Beginning of Portfolio Options Button -->
     <button class="btn btn-secondary dropdown-toggle" type="button"
         id="profileMenu" data-bs-toggle="dropdown"
         aria-expanded="false">
@@ -54,7 +56,7 @@ which include seeing historical returns vs benchmark data -->
         <!-- <li><a class="dropdown-item" onclick="integrate_metamask()">Enter Web3</a></li> -->
     
     </ul>
-    <!-- End of Profile Button -->
+    <!-- End of Portfolio Options Button -->
 
 </div>
 </li>
@@ -112,6 +114,33 @@ The total amount invested in stocks is {{total_stock_amount_in_dollars}}
         {% endfor %}
     </ul>
     </div>
+
+
+
+    <div class="header" >
+        {% if total_crypto_amount_in_dollars %}
+        The total amount invested in crypto is {{total_crypto_amount_in_dollars}}
+        {% endif %}
+    
+    </div>
+    
+    <div>
+        <ul id="port_alloc" class="header">
+            {% for company, percentage in crypto_investment_vehicles_and_alloc.items%}
+            <li>{{company}}, {{percentage}}</li>
+        
+            {% endfor %}
+        </ul>
+        </div>
+        
+        </div >
+        <ul id="port_dscrete_alloc" class="header">
+            {% for company, num_stocks in discrete_crypto_investment_vehicles_and_alloc.items%}
+            <li>{{company}}, {{num_stocks}}</li>
+        
+            {% endfor %}
+        </ul>
+        </div>
 
 
 {% endblock %}

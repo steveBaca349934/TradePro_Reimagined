@@ -2,6 +2,23 @@
 {% load static %}
 {% block body %}
 
+<div class="dropdown" id="profile-button">
+  
+    <!-- Beginning of Portfolio Options Button -->
+    <button class="btn btn-secondary dropdown-toggle" type="button"
+        id="profileMenu" data-bs-toggle="dropdown"
+        aria-expanded="false">
+        Portfolio Options
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+        <li><a class="dropdown-item" href="{% url 'portfolio/historical_dollar_returns' %}">Historical Dollar Returns</a></li>
+        <li><a class="dropdown-item" href="{% url 'portfolio' %}">Back To Portfolio</a></li>
+    </ul>
+    <!-- End of Portfolio Options Button -->
+
+<div>
+    &nbsp;
+</div>
 
 <script>
     var json_dictionary_port_returns = '{{Portfolio_Returns|safe }}';

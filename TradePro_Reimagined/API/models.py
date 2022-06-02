@@ -35,6 +35,12 @@ class MutualFundData(models.Model):
     fidelity = models.JSONField()
     schwab = models.JSONField()
 
+class CryptoData(models.Model):
+    date =  models.DateTimeField(auto_now = True)
+
+    # A large json field which will hold
+    # all of the crypto tickers and their historical data
+    total_market = models.JSONField()
 
 class Portfolio(models.Model):
     user = models.OneToOneField(User, null = True, on_delete = models.SET_NULL)
@@ -43,16 +49,27 @@ class Portfolio(models.Model):
     stock_discrete_port = models.JSONField()
     # stock port is the percentage allocated to the individual stock
     stock_port = models.JSONField()
+
+    # store the dollar amount invested in stocks
+    total_stock_amount_in_dollars = models.FloatField(null=True)
+
     # mf_discrete_port is going to be the actual # of shares bought for 
     # each mf
     mf_discrete_port = models.JSONField()
     # mf port is the percentage allocated to the individual mf
     mf_port = models.JSONField()
+
+    # store the dollar amount invested in mf
+    total_mf_amount_in_dollars = models.FloatField(null=True)
+
     # crypto_discrete_port is going to be the actual # of shares bought for 
     # each mf
     crypto_discrete_port = models.JSONField(null=True)
     # crypto port is the percentage allocated to the individual mf
     crypto_port = models.JSONField(null=True)
+
+    # store the dollar amount invested in crypto
+    total_crypto_amount_in_dollars = models.FloatField(null=True)
 
     stock_breakdown = models.FloatField(null=True)
     mf_breakdown = models.FloatField(null=True)

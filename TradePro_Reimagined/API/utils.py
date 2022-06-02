@@ -96,7 +96,7 @@ def check_specific_column(intermediate_df:pd.DataFrame)->bool:
 
     return True
 
-def handle_specific_queryset(queryset, indice:str)->pd.DataFrame:
+def handle_specific_queryset(queryset, indice:str = None)->pd.DataFrame:
     """
     Given the query set and the indice
     handle logic to return data
@@ -116,6 +116,9 @@ def handle_specific_queryset(queryset, indice:str)->pd.DataFrame:
         json_res = queryset[0].fidelity
     elif indice == "schwab":
         json_res = queryset[0].schwab
+    elif indice is None:
+        # this is going to be crypto
+        json_res = queryset[0].total_market
     
     dict_res = json.loads(json_res)
 
@@ -179,6 +182,24 @@ def extract_mf_data(queryset, vanguard = False, fidelity = False, schwab = False
     df.set_index('Date',inplace=True)
     return df
 
+def extract_crypto_data(queryset)->pd.DataFrame:
+    """
+    Queries postgress and returns data for different mf indices.
+    Users can either choose vanguard, fidelity or schwab. Or pick all three 
+    Or some combination of all three !
+
+    returns dataframe
+    """
+        
+    crypto_total_market_res_df = handle_specific_queryset(queryset)
+        
+    # some final cleanup
+    for col in crypto_total_market_res_df.columns:
+        if '_' in col:
+            crypto_total_market_res_df.pop(col)
+
+    crypto_total_market_res_df.set_index('Date',inplace=True)
+    return crypto_total_market_res_df
 
 def extract_stock_data(queryset, S_AND_P = False, NASDAQ = False, DJIA = False )->pd.DataFrame:
     """
