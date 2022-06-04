@@ -190,20 +190,6 @@ class Portfolio(BaseView):
 
             # This is the RAT score
             self.dict['avg_of_scores'] = query_risk_assessment_score[0].score
-
-            # get stock market data and build an optimal portfolio
-            # based off of the RAT score
-            # s_and_p_tickers = utils.scrape_stock_tickers()
-            # data = utils.get_ticker_data(s_and_p_tickers)
-
-            # investment_vehicles_and_alloc:dict = utils.retrieve_optimal_portfolio(data, s_and_p_tickers ,self.dict['avg_of_scores'])
-
-            # for company, allocations in investment_vehicles_and_alloc.items():
-            #     investment_vehicles_and_alloc[company] = round(allocations,3)
-
-
-            # self.dict['investment_vehicles_and_alloc'] = investment_vehicles_and_alloc
-            # self.dict['discrete_investment_vehicles_and_alloc'] = utils.retrieve_optimal_portfolio_discrete_allocations(data, s_and_p_tickers, self.dict['avg_of_scores'])
             self.dict['financial_form'] = financial_form
             self.dict['mutual_fund_form'] = mutual_fund_form
          
@@ -292,7 +278,7 @@ class Portfolio(BaseView):
                     crypto_tickers_df = utils.extract_crypto_data(query_crypto_fund_data)
 
                     # Finally Calculate the crypto portion
-                    crypto_opt_portfolio_dict,crypto_investment_vehicles_and_alloc_dict, leftover_dollar_amount = \
+                    crypto_opt_portfolio_dict,crypto_investment_vehicles_and_alloc_dict, crypto_leftover_dollar_amount = \
                         utils.retrieve_optimal_portfolio_discrete_allocations(crypto_tickers_df, score, crypto_port_amount)
 
                     # Finally include the crypto portion
@@ -351,6 +337,7 @@ class Portfolio(BaseView):
                     models.Portfolio.objects.filter(user = request.user).delete()
 
                 if crypto_breakdown > 0.0:
+
                     # in this case the user could stomach the risk of crypto
                     update_port = models.Portfolio.objects.create(user = request.user
 
@@ -363,7 +350,7 @@ class Portfolio(BaseView):
                                                                 ,total_mf_amount_in_dollars = mf_port_amount
 
                                                                 ,crypto_discrete_port=json.dumps(crypto_opt_portfolio_dict, default=utils.myconverter)
-                                                                ,crypto_port=json.dumps(dict(crypto_investment_vehicles_and_alloc), default=utils.myconverter)
+                                                                ,crypto_port=json.dumps(dict(crypto_investment_vehicles_and_alloc_dict), default=utils.myconverter)
                                                                 ,total_crypto_amount_in_dollars = crypto_port_amount
 
                                                                 ,stock_breakdown = stock_breakdown
@@ -415,6 +402,7 @@ class Profile(BaseView):
     def get(self, request):
 
         super(Profile, self).get(request)
+        
 
         return render(request, "home/profile.html",self.dict)
 
