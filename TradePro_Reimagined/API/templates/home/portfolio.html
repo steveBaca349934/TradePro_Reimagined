@@ -8,7 +8,7 @@
 <!-- If the user has not submitted the post form yet
 then we don't present them with the drop down list to see
 historical returns (for example) -->
-{% if post_form %}    
+{% if post_form %}
 <h1 class="header">
     Portfolio
 </h1>
@@ -30,117 +30,122 @@ which include seeing historical returns vs benchmark data -->
 {% else %}
 <div id="portfolio_bar">
 
-<li class="port_header_link">
-<h1 class="header">
-    Portfolio
-</h1>
-</li>
+    <li class="port_header_link">
+        <h1 class="header">
+            Portfolio
+        </h1>
+    </li>
 
-<li class="port_header_link">
-<div class="dropdown" id="profile-button">
-  
-    <!-- Beginning of Portfolio Options Button -->
-    <button class="btn btn-secondary dropdown-toggle" type="button"
-        id="profileMenu" data-bs-toggle="dropdown"
-        aria-expanded="false">
-        Portfolio Options
-    </button>
-    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-        <li><a class="dropdown-item" href="{% url 'portfolio/historical_returns' %}">Historical Percentage Returns</a></li>
-        <li><a class="dropdown-item" href="{% url 'portfolio/historical_dollar_returns' %}">Historical Dollar Returns</a></li>
-        <!-- <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li> -->
+    <li class="port_header_link">
+        <div class="dropdown" id="profile-button">
 
-        <!-- Trying to integrate javascript for MetaMask purposes -->
-        <!-- <li><a class="dropdown-item" href="{% url 'web3_home' %}">Enter Web3</a></li> -->
-    
-        <!-- <li><a class="dropdown-item" onclick="integrate_metamask()">Enter Web3</a></li> -->
-    
-    </ul>
-    <!-- End of Portfolio Options Button -->
+            <!-- Beginning of Portfolio Options Button -->
+            <button class="btn btn-secondary dropdown-toggle" type="button"
+                id="profileMenu" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Portfolio Options
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li><a class="dropdown-item" href="{% url
+                        'portfolio/historical_returns' %}">Historical Percentage
+                        Returns</a></li>
+                <li><a class="dropdown-item" href="{% url
+                        'portfolio/historical_dollar_returns' %}">Historical
+                        Dollar Returns</a></li>
+                <!-- <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li> -->
+                <!-- Trying to integrate javascript for MetaMask purposes -->
+                <!-- <li><a class="dropdown-item" href="{% url 'web3_home' %}">Enter Web3</a></li> -->
+                <!-- <li><a class="dropdown-item" onclick="integrate_metamask()">Enter Web3</a></li> -->
+            </ul>
+            <!-- End of Portfolio Options Button -->
 
+        </div>
+    </li>
 </div>
-</li>
-</div>
 
-{% endif %}    
-
-        
-
-<div class="header">
-{% if total_stock_amount_in_dollars %}
-The total amount invested in stocks is {{total_stock_amount_in_dollars}}
 {% endif %}
-</div>
 
-<div>
-<ul id="port_alloc" class="header">
-    {% for company, percentage in stock_investment_vehicles_and_alloc.items%}
-    <li>{{company}}, {{percentage}}</li>
+{% if total_stock_amount_in_dollars %}
+<table class="table table-dark table-striped" id="stock_portfolio">
+    <caption>Stock Allocation, total amount in stocks is {{total_stock_amount_in_dollars}}</caption>
+    <thead>
+        <tr>
+            <th>
+                Ticker/Symbol
+            </th>
+            <th>
+                % Of Portfolio
+            </th>
+            <th>
+                # Of Shares
+            </th>
+        </tr>
+    </thead>
 
-    {% endfor %}
-</ul>
-</div>
-
-</div >
-<ul id="port_dscrete_alloc" class="header">
-    {% for company, num_stocks in discrete_stock_investment_vehicles_and_alloc.items%}
-    <li>{{company}}, {{num_stocks}}</li>
-
-    {% endfor %}
-</ul>
-</div>
-
-<div class="header" >
-    {% if total_mf_amount_in_dollars %}
-    The total amount invested in mf is {{total_mf_amount_in_dollars}}
-    {% endif %}
-
-</div>
-
-<div>
-    <ul id="port_alloc" class="header">
-        {% for company, percentage in mf_investment_vehicles_and_alloc.items%}
-        <li>{{company}}, {{percentage}}</li>
-    
+    <tbody>
+        {% for company, percentage, shares in stock_investment_vehicles_and_alloc%}
+        <tr>
+        <td>{{company}}</td> <td>{{percentage}}</td> <td>{{shares}}</td>
         {% endfor %}
-    </ul>
-    </div>
-    
-    </div >
-    <ul id="port_dscrete_alloc" class="header">
-        {% for company, num_stocks in discrete_mf_investment_vehicles_and_alloc.items%}
-        <li>{{company}}, {{num_stocks}}</li>
-    
+        </tr>
+    </tbody>
+</table>
+{% endif %}
+
+{% if total_mf_amount_in_dollars %}
+<table class="table table-dark table-striped" id="mf_portfolio">
+    <caption>Fund Allocation, total amount in funds is {{total_mf_amount_in_dollars}}</caption>
+    <thead>
+        <tr>
+            <th>
+                Ticker/Symbol
+            </th>
+            <th>
+                % Of Portfolio
+            </th>
+            <th>
+                # Of Shares
+            </th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for company, percentage, shares in mf_investment_vehicles_and_alloc%}
+        <tr>
+        <td>{{company}}</td> <td>{{percentage}}</td> <td>{{shares}}</td>
         {% endfor %}
-    </ul>
-    </div>
+        </tr>
+    </tbody>
+</table>
+{% endif %}
 
+{% if total_crypto_amount_in_dollars %}
+<table class="table table-dark table-striped" id="crypto_portfolio">
+    <caption>Crypto Allocation, total amount in crypto is {{total_crypto_amount_in_dollars}}</caption>
+    <thead>
+        <tr>
+            <th>
+                Ticker/Symbol
+            </th>
+            <th>
+                % Of Portfolio
+            </th>
+            <th>
+                # Of Shares
+            </th>
+        </tr>
+    </thead>
 
+    <tbody>
+        {% for company, percentage, shares in crypto_investment_vehicles_and_alloc%}
+        <tr>
+        <td>{{company}}</td> <td>{{percentage}}</td> <td>{{shares}}</td>
+        {% endfor %}
+        </tr>
+    </tbody>
+</table>
+{% endif %}
 
-    <div class="header" >
-        {% if total_crypto_amount_in_dollars %}
-        The total amount invested in crypto is {{total_crypto_amount_in_dollars}}
-        {% endif %}
-    
-    </div>
-    
-    <div>
-        <ul id="port_alloc" class="header">
-            {% for company, percentage in crypto_investment_vehicles_and_alloc.items%}
-            <li>{{company}}, {{percentage}}</li>
-        
-            {% endfor %}
-        </ul>
-        </div>
-        
-        </div >
-        <ul id="port_dscrete_alloc" class="header">
-            {% for company, num_stocks in discrete_crypto_investment_vehicles_and_alloc.items%}
-            <li>{{company}}, {{num_stocks}}</li>
-        
-            {% endfor %}
-        </ul>
-        </div>
 
 
 {% endblock %}

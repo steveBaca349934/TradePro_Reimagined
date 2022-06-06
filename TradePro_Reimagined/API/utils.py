@@ -427,10 +427,19 @@ def retrieve_optimal_portfolio_discrete_allocations(ticker_df:pd.DataFrame, rat:
 
     for company in companies_to_remove_list:
         res_dict.pop(company)
-           
-    
 
-    return allocation,res_dict, leftover
+    # format the percent of the portfolio that each asset makes up
+    # this rounds to one decimal place and makes into a percentage
+    for company, allocations in res_dict.items():
+        res_dict[company] = '{:.1%}'.format(round(allocations,3))
+
+    # gather all the data calculated in this funciton and turn into 
+    # a format that fits my needs in html
+    return_list = []
+    for ticker in allocation:
+        return_list.append((ticker, res_dict[ticker], allocation[ticker]))
+
+    return tuple(return_list)
 
 
 def retrieve_and_clean_benchmark_data(query_set)->pd.DataFrame:

@@ -201,7 +201,7 @@ class Portfolio(BaseView):
 
             return HttpResponseRedirect(reverse('risk_assessment_test'))
 
-    def post(self, request):
+    def post(self, request, **kwargs):
         super(Portfolio, self).post(request)
 
         query_risk_assessment_model = models.RiskAssessmentScore.objects.filter(user=request.user)
@@ -278,105 +278,85 @@ class Portfolio(BaseView):
                     crypto_tickers_df = utils.extract_crypto_data(query_crypto_fund_data)
 
                     # Finally Calculate the crypto portion
-                    crypto_opt_portfolio_dict,crypto_investment_vehicles_and_alloc_dict, crypto_leftover_dollar_amount = \
-                        utils.retrieve_optimal_portfolio_discrete_allocations(crypto_tickers_df, score, crypto_port_amount)
+                    crypto_tuple = utils.retrieve_optimal_portfolio_discrete_allocations(crypto_tickers_df, score, crypto_port_amount)
 
                     # Finally include the crypto portion
-                    self.dict['crypto_investment_vehicles_and_alloc'] = crypto_investment_vehicles_and_alloc_dict
-
-                    self.dict['discrete_crypto_investment_vehicles_and_alloc'] = crypto_opt_portfolio_dict
-
+                    self.dict['crypto_investment_vehicles_and_alloc'] = crypto_tuple
                     self.dict['total_crypto_amount_in_dollars'] = crypto_port_amount
 
                 
-
                 # First Calculate the stocks portion
-                stock_opt_portfolio_dict,stock_investment_vehicles_and_alloc_dict, leftover_dollar_amount = \
-                        utils.retrieve_optimal_portfolio_discrete_allocations(stock_tickers_df, score, stock_port_amount)
+                # stock_opt_portfolio_dict,stock_investment_vehicles_and_alloc_dict, leftover_dollar_amount = \
+                #         utils.retrieve_optimal_portfolio_discrete_allocations(stock_tickers_df, score, stock_port_amount)
 
-                for company, allocations in stock_investment_vehicles_and_alloc_dict.items():
-                    stock_investment_vehicles_and_alloc_dict[company] = round(allocations,3)
+                stock_tuple = utils.retrieve_optimal_portfolio_discrete_allocations(stock_tickers_df, score, stock_port_amount)
 
-                self.dict['stock_investment_vehicles_and_alloc'] = stock_investment_vehicles_and_alloc_dict
-
-                # This is the discrete # of shares that should be invested in each asset
-                # according to the assets most recent prices
-                self.dict['discrete_stock_investment_vehicles_and_alloc'] = stock_opt_portfolio_dict
-
+                
+                self.dict['stock_investment_vehicles_and_alloc'] = stock_tuple
                 self.dict['total_stock_amount_in_dollars'] = stock_port_amount
 
-
                 # Then Calculate the mutual fund portion
-                mf_opt_portfolio_dict,mf_investment_vehicles_and_alloc_dict, leftover_dollar_amount = utils.retrieve_optimal_portfolio_discrete_allocations(mf_tickers_df, score, mf_port_amount)
+                mf_tuple = utils.retrieve_optimal_portfolio_discrete_allocations(mf_tickers_df, score, mf_port_amount)
 
-                for company, allocations in mf_investment_vehicles_and_alloc_dict.items():
-                    mf_investment_vehicles_and_alloc_dict[company] = round(allocations,3)
-
-                self.dict['mf_investment_vehicles_and_alloc'] = mf_investment_vehicles_and_alloc_dict
-
-                # This is the discrete # of shares that should be invested in each asset
-                # according to the assets most recent prices
-                self.dict['discrete_mf_investment_vehicles_and_alloc'] = mf_opt_portfolio_dict
-
+                self.dict['mf_investment_vehicles_and_alloc'] = mf_tuple
                 self.dict['total_mf_amount_in_dollars'] = mf_port_amount
 
-               
-                # Indicate to the html logic that the "Django Post"
-                # Form is no longer needed
-                self.dict['post_form'] = False
+                # # Indicate to the html logic that the "Django Post"
+                # # Form is no longer needed
+                # self.dict['post_form'] = False
 
 
-                query_port = models.Portfolio.objects.filter(user=request.user)
+                # query_port = models.Portfolio.objects.filter(user=request.user)
 
-                # if the user has an object in the DB
-                # then we need to delete the current entry for it 
-                # and resave the new portfolio
-                if len(query_port) > 0:
+                # # if the user has an object in the DB
+                # # then we need to delete the current entry for it 
+                # # and resave the new portfolio
+                # if len(query_port) > 0:
 
-                    # Final Step is to save portfolio to the database
-                    models.Portfolio.objects.filter(user = request.user).delete()
+                #     # Final Step is to save portfolio to the database
+                #     models.Portfolio.objects.filter(user = request.user).delete()
 
-                if crypto_breakdown > 0.0:
+                # if crypto_breakdown > 0.0:
 
-                    # in this case the user could stomach the risk of crypto
-                    update_port = models.Portfolio.objects.create(user = request.user
+                #     # in this case the user could stomach the risk of crypto
+                #     update_port = models.Portfolio.objects.create(user = request.user
 
-                                                                ,stock_discrete_port=json.dumps(stock_opt_portfolio_dict, default=utils.myconverter)
-                                                                ,stock_port=json.dumps(dict(stock_investment_vehicles_and_alloc_dict), default=utils.myconverter)
-                                                                ,total_stock_amount_in_dollars = stock_port_amount
+                #                                                 ,stock_discrete_port=json.dumps(stock_opt_portfolio_dict, default=utils.myconverter)
+                #                                                 ,stock_port=json.dumps(dict(stock_investment_vehicles_and_alloc_dict), default=utils.myconverter)
+                #                                                 ,total_stock_amount_in_dollars = stock_port_amount
 
-                                                                ,mf_discrete_port=json.dumps(mf_opt_portfolio_dict, default=utils.myconverter)
-                                                                ,mf_port=json.dumps(dict(mf_investment_vehicles_and_alloc_dict), default=utils.myconverter)
-                                                                ,total_mf_amount_in_dollars = mf_port_amount
+                #                                                 ,mf_discrete_port=json.dumps(mf_opt_portfolio_dict, default=utils.myconverter)
+                #                                                 ,mf_port=json.dumps(dict(mf_investment_vehicles_and_alloc_dict), default=utils.myconverter)
+                #                                                 ,total_mf_amount_in_dollars = mf_port_amount
 
-                                                                ,crypto_discrete_port=json.dumps(crypto_opt_portfolio_dict, default=utils.myconverter)
-                                                                ,crypto_port=json.dumps(dict(crypto_investment_vehicles_and_alloc_dict), default=utils.myconverter)
-                                                                ,total_crypto_amount_in_dollars = crypto_port_amount
+                #                                                 ,crypto_discrete_port=json.dumps(crypto_opt_portfolio_dict, default=utils.myconverter)
+                #                                                 ,crypto_port=json.dumps(dict(crypto_investment_vehicles_and_alloc_dict), default=utils.myconverter)
+                #                                                 ,total_crypto_amount_in_dollars = crypto_port_amount
 
-                                                                ,stock_breakdown = stock_breakdown
-                                                                ,mf_breakdown = mf_breakdown
-                                                                ,crypto_breakdown = crypto_breakdown
-                                                                )
+                #                                                 ,stock_breakdown = stock_breakdown
+                #                                                 ,mf_breakdown = mf_breakdown
+                #                                                 ,crypto_breakdown = crypto_breakdown
+                #                                                 )
 
-                else:
-                    # in this case the user couldn't stomach the risk of crypto
-                    update_port = models.Portfolio.objects.create(user = request.user
+                # else:
+                #     # in this case the user couldn't stomach the risk of crypto
+                #     update_port = models.Portfolio.objects.create(user = request.user
 
-                                                                ,stock_discrete_port=json.dumps(stock_opt_portfolio_dict, default=utils.myconverter)
-                                                                ,stock_port=json.dumps(dict(stock_investment_vehicles_and_alloc_dict), default=utils.myconverter)
-                                                                ,total_stock_amount_in_dollars = stock_port_amount
+                #                                                 ,stock_discrete_port=json.dumps(stock_opt_portfolio_dict, default=utils.myconverter)
+                #                                                 ,stock_port=json.dumps(dict(stock_investment_vehicles_and_alloc_dict), default=utils.myconverter)
+                #                                                 ,total_stock_amount_in_dollars = stock_port_amount
 
-                                                                ,mf_discrete_port=json.dumps(mf_opt_portfolio_dict, default=utils.myconverter)
-                                                                ,mf_port=json.dumps(dict(mf_investment_vehicles_and_alloc_dict), default=utils.myconverter)
-                                                                ,total_mf_amount_in_dollars = mf_port_amount
+                #                                                 ,mf_discrete_port=json.dumps(mf_opt_portfolio_dict, default=utils.myconverter)
+                #                                                 ,mf_port=json.dumps(dict(mf_investment_vehicles_and_alloc_dict), default=utils.myconverter)
+                #                                                 ,total_mf_amount_in_dollars = mf_port_amount
 
-                                                                ,stock_breakdown = stock_breakdown
-                                                                ,mf_breakdown = mf_breakdown
-                                                                ,crypto_breakdown = crypto_breakdown
-                                                                )
+                #                                                 ,stock_breakdown = stock_breakdown
+                #                                                 ,mf_breakdown = mf_breakdown
+                #                                                 ,crypto_breakdown = crypto_breakdown
+                #                                                 )
 
 
-                update_port.save()
+                # update_port.save()
 
 
 

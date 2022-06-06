@@ -25,20 +25,19 @@
     var json_dictionary_dollar_port_returns = '{{Dollar_Portfolio_Returns|safe }}';
     var json_dictionary_dollar_benchmark_returns = '{{Dollar_BenchMark_Returns|safe }}';
 
-
-
-
     window.onload = function () {
     
         show_chart(json_dictionary_dollar_port_returns, json_dictionary_dollar_benchmark_returns);
 
     
     }
+
+
     </script>
     </head>
     <body>
     <div id="chartContainer" style="height: 370px; width: 100%;"></div>
-    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script defer src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
     <script defer src= "{% static 'home/scripts/chart.js' %}">
             
     </script>
