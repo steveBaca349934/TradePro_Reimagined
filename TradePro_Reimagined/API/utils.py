@@ -1,3 +1,4 @@
+from typing import Tuple, Dict
 from django.shortcuts import render
 import re
 import yfinance as yf
@@ -355,7 +356,7 @@ def get_ticker_data(tickers:dict)->pd.DataFrame:
     
 #     return res_dict
 
-def retrieve_optimal_portfolio_discrete_allocations(ticker_df:pd.DataFrame, rat:int, portfolio_amount:float)->dict:
+def retrieve_optimal_portfolio_discrete_allocations(ticker_df:pd.DataFrame, rat:int, portfolio_amount:float)-> Tuple[Tuple[str,str,int], Dict[str, float], Dict[str, int]]:
     """
     Given a risk assessment score, which is a measurement
     of a client's risk tolerance
@@ -431,15 +432,20 @@ def retrieve_optimal_portfolio_discrete_allocations(ticker_df:pd.DataFrame, rat:
     # format the percent of the portfolio that each asset makes up
     # this rounds to one decimal place and makes into a percentage
     for company, allocations in res_dict.items():
-        res_dict[company] = '{:.1%}'.format(round(allocations,3))
+        # res_dict[company] = '{:.1%}'.format(round(allocations,3))
+        res_dict[company] = round(allocations,3)
+        
 
     # gather all the data calculated in this funciton and turn into 
     # a format that fits my needs in html
     return_list = []
     for ticker in allocation:
-        return_list.append((ticker, res_dict[ticker], allocation[ticker]))
+        return_list.append((ticker, '{:.1%}'.format(res_dict[ticker]), allocation[ticker]))
 
-    return tuple(return_list)
+    # print(f"\n the res dict is {res_dict} \n")
+    # print(f"\n the allocation dict is {allocation} \n")
+
+    return tuple(return_list), allocation, dict(res_dict)
 
 
 def retrieve_and_clean_benchmark_data(query_set)->pd.DataFrame:
